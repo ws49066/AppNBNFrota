@@ -1,9 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
+    android:background="@color/nbncolor"
     tools:context=".MenuActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Logo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="298dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="283dp"
+            android:layout_height="220dp"
+            android:src="@drawable/logo" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        //Menu Icon
+        <LinearLayout
+            android:layout_marginRight="70dp"
+            android:layout_marginLeft="70dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="100dp">
+
+                //Icon Left
+                <LinearLayout
+                    android:gravity="left"
+                    android:layout_width="135dp"
+                    android:layout_height="100dp">
+
+                    <ImageView
+                        android:id="@+id/full"
+                        android:layout_width="93dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/fuel" />
+                </LinearLayout>
+
+
+
+                //Icon Right
+                <LinearLayout
+                    android:gravity="right"
+                    android:layout_width="135dp"
+                    android:layout_height="100dp">
+
+                    <ImageView
+                        android:id="@+id/manutencao"
+                        android:layout_width="93dp"
+                        android:layout_height="87dp"
+                        android:background="@drawable/manutencao" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginRight="70dp"
+            android:layout_marginLeft="70dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="100dp">
+
+                //Icon Left
+                <LinearLayout
+                    android:gravity="left"
+                    android:layout_width="135dp"
+                    android:layout_height="100dp">
+
+                    <ImageView
+                        android:id="@+id/cadCarro"
+                        android:layout_width="108dp"
+                        android:layout_height="75dp"
+                        android:background="@drawable/carro" />
+                </LinearLayout>
+
+
+
+                //Icon Right
+                <LinearLayout
+                    android:gravity="right"
+                    android:layout_width="135dp"
+                    android:layout_height="100dp">
+
+                    <ImageView
+                        android:id="@+id/cadUser"
+                        android:layout_width="98dp"
+                        android:layout_height="82dp"
+                        android:background="@drawable/caduser" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginRight="70dp"
+            android:layout_marginLeft="70dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="100dp">
+
+                //Icon Left
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp">
+
+                    <ImageView
+                        android:id="@+id/logout"
+                        android:layout_width="88dp"
+                        android:layout_height="86dp"
+                        android:background="@drawable/sair" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

@@ -52,7 +52,7 @@
                         android:layout_height="60dp">
 
                         <ImageView
-                            android:src="@drawable/ic_baseline_verified_user_24"
+                            android:src="@drawable/ic_baseline_person_24"
                             android:scaleType="fitCenter"
                             android:layout_width="40dp"
                             android:layout_height="40dp"/>
@@ -99,9 +99,9 @@
                             android:layout_marginRight="10dp"
                             android:background="@android:color/transparent"
                             android:id="@+id/edit_email"
-                            android:hint="Email"
+                            android:hint="User"
                             android:textSize="16sp"
-                            android:inputType="textEmailAddress"
+                            android:inputType="text"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"/>
                     </LinearLayout>
@@ -133,7 +133,23 @@
 
                 </LinearLayout>
 
+
             </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/salvarAutenticacao"
+                android:layout_marginTop="1dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="LEMBRAR-ME"
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.496"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_senha" />
+
 
             <!-- Button -->
             <Button
