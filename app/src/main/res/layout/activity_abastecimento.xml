@@ -128,7 +128,6 @@
                        android:gravity="center_vertical"
                        android:textColor="@color/white"
                        android:layout_width="130dp"
-                       android:text="Chevrolet Onix"
                        android:layout_height="match_parent"
                        android:layout_marginRight="40dp"
                        android:layout_weight=".28"
@@ -160,7 +159,6 @@
                        android:gravity="center_vertical"
                        android:textColor="@color/white"
                        android:layout_width="130dp"
-                       android:text="Prata"
                        android:layout_height="match_parent"
                        android:layout_marginRight="40dp"
                        android:layout_weight=".28"
@@ -252,7 +250,6 @@
                        android:background="@color/white"
                        android:backgroundTint="@color/white"
                        android:gravity="center_vertical|center_horizontal"
-                       android:text="40658"
                        android:textColor="#000"
                        android:textSize="15dp" />
 
@@ -285,7 +282,6 @@
                        android:background="@color/white"
                        android:backgroundTint="@color/white"
                        android:gravity="center_vertical|center_horizontal"
-                       android:text="32"
                        android:textColor="#000"
                        android:textSize="15dp" />
 
@@ -318,7 +314,6 @@
                        android:background="@color/white"
                        android:backgroundTint="@color/white"
                        android:gravity="center_vertical|center_horizontal"
-                       android:text="437"
                        android:textColor="#000"
                        android:textSize="15dp" />
 

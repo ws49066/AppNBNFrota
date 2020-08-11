@@ -50,7 +50,7 @@ public class MenuActivity extends AppCompatActivity {
         cadCarro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Cadastro Veiculo",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MenuActivity.this,CadastroVeiculo.class));
             }
         });
 

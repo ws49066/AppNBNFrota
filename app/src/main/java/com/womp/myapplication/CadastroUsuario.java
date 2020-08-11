@@ -53,7 +53,6 @@ public class CadastroUsuario extends AppCompatActivity {
                 int radioID = radioGroup.getCheckedRadioButtonId();
                 radioButton = findViewById(radioID);
                 tipo = radioButton.getText().toString();
-                Toast.makeText(getApplicationContext(),tipo,Toast.LENGTH_SHORT).show();
                 SalvarDadosUsuario();
             }
         });
