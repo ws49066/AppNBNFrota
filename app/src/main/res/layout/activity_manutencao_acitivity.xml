@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/nbncolor"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".ManutencaoAcitivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Logo and Titule -->
+            <LinearLayout
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="200dp">
+
+                <ImageView
+                    android:id="@+id/full"
+                    android:layout_width="88dp"
+                    android:layout_height="85dp"
+                    android:background="@drawable/manutencao" />
+
+                <TextView
+                    android:fontFamily="sans-serif"
+                    android:textSize="18dp"
+                    android:textAlignment="center"
+                    android:text="MANUTENÇÃO"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+
+            <!-- Seach Placa -->
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="369dp"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="158dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="20dp"
+                        android:gravity="center_vertical|right"
+                        android:text="PLACA:"
+                        android:textColor="#1a8cce"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="40dp"
+                        android:layout_weight=".28"
+                        android:background="@drawable/backgroundspinner"
+                        android:orientation="horizontal">
+
+                        <Spinner
+                            android:id="@+id/spinnerPlacaManu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:backgroundTint="@color/white"
+                            android:gravity="center"
+                            android:spinnerMode="dropdown" />
+
+                        <ImageView
+                            android:layout_width="72dp"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_gravity="right"
+                            android:layout_marginEnd="-1dp"
+                            android:layout_marginBottom="0dp"
+                            android:src="@drawable/dropdown" />
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <!-- Layout Dinamica -->
+            <LinearLayout
+                android:id="@+id/LayoutDinamicoManutencao"
+                android:visibility="invisible"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!-- Modelo -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="90dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="45dp"
+                        android:gravity="center_vertical"
+                        android:text="MODELO:"
+                        android:textColor="#1a8cce"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/modeloManu"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/white"
+                        android:layout_width="130dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="40dp"
+                        android:layout_weight=".28"
+                        android:orientation="horizontal">
+                    </TextView>
+
+
+                </LinearLayout>
+
+                <!-- Cor -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="90dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="45dp"
+                        android:gravity="center_vertical"
+                        android:text="COR:"
+                        android:textColor="#1a8cce"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/corManu"
+                        android:textSize="15dp"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/white"
+                        android:layout_width="130dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="40dp"
+                        android:layout_weight=".28"
+                        android:orientation="horizontal">
+                    </TextView>
+
+
+                </LinearLayout>
+
+
+                <!-- KM ATUAL -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="90dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="45dp"
+                        android:gravity="center_vertical"
+                        android:text="KM ATUAL:"
+                        android:textColor="#1a8cce"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/kmatualManu"
+                        android:inputType="number"
+                        android:textStyle="bold"
+                        android:layout_margin="5dp"
+                        android:layout_width="118dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:backgroundTint="@color/white"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:textColor="#000"
+                        android:textSize="15dp" />
+
+
+                </LinearLayout>
+
+                <!-- LITROS -->
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_marginTop="8dp"
+                        android:layout_width="90dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="45dp"
+                        android:text="PEÇAS:"
+                        android:textColor="#1a8cce"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/pecas"
+                        android:layout_width="234dp"
+                        android:layout_height="70dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/white"
+                        android:gravity="top|left"
+                        android:inputType="textMultiLine"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:lines="6"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:scrollHorizontally="false" />
+                </LinearLayout>
+
+                <!-- Numero da Requisição -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_marginTop="8dp"
+                        android:layout_width="90dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="45dp"
+                        android:text="SERIVIÇOS:"
+                        android:textColor="#1a8cce"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/servicos"
+                        android:layout_width="234dp"
+                        android:layout_height="70dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/white"
+                        android:gravity="top|left"
+                        android:inputType="textMultiLine"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:lines="6"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:scrollHorizontally="false" />
+                </LinearLayout>
+
+                <!-- Valor -->
+                <LinearLayout
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="90dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="45dp"
+                        android:gravity="center_vertical"
+                        android:text="VALOR(R$): "
+                        android:textColor="#1a8cce"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:padding="6dp"
+                        android:id="@+id/editvalor"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:background="@color/white"
+                        android:hint="0,00"
+                        android:inputType="numberDecimal"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <!-- Fotos -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="94dp">
+
+                    <ImageView
+                        android:id="@+id/ImgBtn_foto_Manutencao"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:layout_margin="20dp"
+                        android:src="@drawable/ic_baseline_camera_alt_24" />
+                </LinearLayout>
+
+                <!-- -->
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/btn_salvar_Manutencao"
+                        android:background="#1a8cce"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_width="195dp"
+                        android:layout_height="match_parent"
+                        android:text="SALVAR">
+                    </Button>
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

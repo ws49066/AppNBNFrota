@@ -195,7 +195,7 @@
                        <RadioButton
                            android:id="@+id/gasolina"
                            android:checked="true"
-                           android:onClick="radioCombustivel"
+                           android:onClick="CombustivelRadio"
                            android:padding="3dp"
                            android:layout_width="wrap_content"
                            android:layout_height="match_parent"
@@ -204,7 +204,7 @@
 
                        <RadioButton
                            android:id="@+id/etanol"
-                           android:onClick="radioCombustivel"
+                           android:onClick="CombustivelRadio"
                            android:padding="3dp"
                            android:layout_width="wrap_content"
                            android:layout_height="40dp"
@@ -213,7 +213,7 @@
 
                        <RadioButton
                            android:id="@+id/diesel"
-                           android:onClick="radioCombustivel"
+                           android:onClick="CombustivelRadio"
                            android:padding="3dp"
                            android:layout_width="wrap_content"
                            android:layout_height="40dp"

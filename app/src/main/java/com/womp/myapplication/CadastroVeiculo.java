@@ -36,7 +36,6 @@ public class CadastroVeiculo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_veiculo);
 
-        groupTipoVeiculo = findViewById(R.id.radio_tipoVeiculo);
         groupTipoComb = findViewById(R.id.tipodecomb);
 
         marca = findViewById(R.id.edit_marca);

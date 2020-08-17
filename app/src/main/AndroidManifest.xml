@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CadastroVeiculo"></activity>
+        <activity android:name=".ManutencaoAcitivity"></activity>
+        <activity android:name=".CadastroVeiculo" />
         <activity android:name=".CadastroUsuario" />
         <activity android:name=".AbastecimentoActivity" />
         <activity android:name=".MenuActivity" />
