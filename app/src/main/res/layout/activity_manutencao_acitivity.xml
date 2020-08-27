@@ -102,7 +102,7 @@
             <LinearLayout
                 android:id="@+id/LayoutDinamicoManutencao"
                 android:visibility="invisible"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -116,7 +116,7 @@
                     <TextView
                         android:layout_width="90dp"
                         android:layout_height="40dp"
-                        android:layout_marginLeft="45dp"
+                        android:layout_marginLeft="22dp"
                         android:gravity="center_vertical"
                         android:text="MODELO:"
                         android:textColor="#1a8cce"
@@ -145,9 +145,9 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="90dp"
+                        android:layout_width="93dp"
                         android:layout_height="40dp"
-                        android:layout_marginLeft="45dp"
+                        android:layout_marginLeft="20dp"
                         android:gravity="center_vertical"
                         android:text="COR:"
                         android:textColor="#1a8cce"
@@ -177,9 +177,9 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="90dp"
+                        android:layout_width="120dp"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="45dp"
+                        android:layout_marginLeft="21dp"
                         android:gravity="center_vertical"
                         android:text="KM ATUAL:"
                         android:textColor="#1a8cce"
@@ -188,21 +188,21 @@
 
                     <EditText
                         android:id="@+id/kmatualManu"
-                        android:inputType="number"
-                        android:textStyle="bold"
-                        android:layout_margin="5dp"
                         android:layout_width="118dp"
                         android:layout_height="match_parent"
+                        android:layout_margin="5dp"
                         android:background="@color/white"
                         android:backgroundTint="@color/white"
                         android:gravity="center_vertical|center_horizontal"
+                        android:inputType="number"
                         android:textColor="#000"
-                        android:textSize="15dp" />
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
 
 
                 </LinearLayout>
 
-                <!-- LITROS -->
+                <!-- PEÇAS -->
                 <LinearLayout
                     android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
@@ -210,10 +210,10 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_marginTop="8dp"
-                        android:layout_width="90dp"
+                        android:layout_width="119dp"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="45dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="8dp"
                         android:text="PEÇAS:"
                         android:textColor="#1a8cce"
                         android:textSize="16dp"
@@ -235,19 +235,51 @@
                         android:scrollHorizontally="false" />
                 </LinearLayout>
 
-                <!-- Numero da Requisição -->
+                <!-- Valor -->
                 <LinearLayout
+                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_height="40dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_marginTop="8dp"
-                        android:layout_width="90dp"
+                        android:layout_width="118dp"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="45dp"
-                        android:text="SERIVIÇOS:"
+                        android:layout_marginLeft="20dp"
+                        android:gravity="center_vertical"
+                        android:text="PEÇAS(R$): "
+                        android:textColor="#1a8cce"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:layout_margin="5dp"
+                        android:id="@+id/editvalorpecas"
+                        android:layout_width="118dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:background="@color/white"
+                        android:hint="0,00"
+                        android:inputType="numberDecimal"
+                        android:paddingLeft="6dp"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <!-- SERVIÇOS -->
+                <!-- Valor -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="115dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="8dp"
+                        android:text="SERVIÇOS:"
                         android:textColor="#1a8cce"
                         android:textSize="16dp"
                         android:textStyle="bold" />
@@ -260,43 +292,73 @@
                         android:background="@color/white"
                         android:gravity="top|left"
                         android:inputType="textMultiLine"
+                        android:lines="6"
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:lines="6"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:scrollHorizontally="false" />
+                        android:scrollHorizontally="false"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
                 </LinearLayout>
 
-                <!-- Valor -->
                 <LinearLayout
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="90dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="45dp"
+                        android:layout_marginLeft="20dp"
                         android:gravity="center_vertical"
-                        android:text="VALOR(R$): "
+                        android:text="SERVIÇOS(R$): "
                         android:textColor="#1a8cce"
                         android:textSize="16dp"
                         android:textStyle="bold" />
 
                     <EditText
-                        android:padding="6dp"
-                        android:id="@+id/editvalor"
-                        android:layout_width="100dp"
+                        android:id="@+id/editvalorservicos"
+                        android:layout_width="118dp"
                         android:layout_height="match_parent"
+                        android:layout_margin="5dp"
                         android:layout_marginLeft="5dp"
                         android:background="@color/white"
                         android:hint="0,00"
                         android:inputType="numberDecimal"
+                        android:padding="6dp"
                         android:textSize="15sp" />
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="115dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="20dp"
+                        android:gravity="center_vertical"
+                        android:text="TOTAL(R$): "
+                        android:textColor="#1a8cce"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <org.fabiomsr.moneytextview.MoneyTextView
+                        android:id="@+id/valortotal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        app:decimalMargin="5dp"
+                        app:baseTextColor="@color/white"
+                        app:decimalDigitsTextSize="13dp"
+                        app:symbol="" />
+
+                </LinearLayout>
+
+
+
 
                 <!-- Fotos -->
                 <LinearLayout
@@ -305,10 +367,43 @@
 
                     <ImageView
                         android:id="@+id/ImgBtn_foto_Manutencao"
-                        android:layout_width="match_parent"
+                        android:layout_width="366dp"
                         android:layout_height="58dp"
                         android:layout_margin="20dp"
                         android:src="@drawable/ic_baseline_camera_alt_24" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+
+                    <LinearLayout
+                        android:id="@+id/layout_gridmig"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_margin="10dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="invisible">
+
+                        <GridView
+                            android:id="@+id/gridview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dp"
+                            android:clickable="true"
+                            android:columnWidth="115dp"
+                            android:drawSelectorOnTop="true"
+                            android:numColumns="3"
+                            android:verticalSpacing="10dp" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <!-- -->

@@ -71,7 +71,7 @@
                         android:textStyle="bold" />
 
                     <RadioGroup
-                        android:id="@+id/radio_tipoVeiculo"
+                        android:id="@+id/tipodeveiculos"
                         android:textSize="15dp"
                         android:layout_width="130dp"
                         android:layout_height="match_parent"
@@ -84,7 +84,7 @@
                             android:checked="true"
                             android:padding="3dp"
                             android:text="Carro"
-                            android:onClick="radioCombustivel"
+                            android:onClick="radioVeiculo"
                             android:textColor="@color/white" />
                         <RadioButton
                             android:id="@+id/moto"
@@ -92,7 +92,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="40dp"
                             android:text="Moto"
-                            android:onClick="radioCombustivel"
+                            android:onClick="radioVeiculo"
                             android:textColor="@color/white" />
                     </RadioGroup>
 
@@ -326,6 +326,7 @@
 
                 <!-- Tipo de Combustivel -->
                 <LinearLayout
+                    android:id="@+id/tipodeveiculo"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:orientation="horizontal">
@@ -341,7 +342,7 @@
                         android:textStyle="bold" />
 
                     <RadioGroup
-                        android:id="@+id/tipodecomb"
+                        android:id="@+id/tipodecombustivel"
                         android:textSize="15dp"
                         android:layout_width="130dp"
                         android:layout_height="match_parent"

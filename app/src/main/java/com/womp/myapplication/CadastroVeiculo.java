@@ -36,8 +36,8 @@ public class CadastroVeiculo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_veiculo);
 
-        groupTipoComb = findViewById(R.id.tipodecomb);
-
+        groupTipoComb = findViewById(R.id.tipodecombustivel);
+        groupTipoVeiculo =findViewById(R.id.tipodeveiculos);
         marca = findViewById(R.id.edit_marca);
         modelo = findViewById(R.id.edit_modelo);
         cor = findViewById(R.id.edit_cor);
@@ -107,9 +107,15 @@ public class CadastroVeiculo extends AppCompatActivity {
 
     public void radioCombustivel(View view){
         //get id
-        int radioIDCarro = groupTipoVeiculo.getCheckedRadioButtonId();
         int radioIDComb = groupTipoComb.getCheckedRadioButtonId();
-        buttonVeiculo = findViewById(radioIDCarro);
         buttonCombustivel = findViewById(radioIDComb);
     }
+
+    public void radioVeiculo(View view){
+        //get id
+        int radioIDCarro = groupTipoVeiculo.getCheckedRadioButtonId();
+        buttonVeiculo = findViewById(radioIDCarro);
+
+    }
+
 }

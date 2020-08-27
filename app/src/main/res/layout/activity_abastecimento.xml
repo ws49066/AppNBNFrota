@@ -335,6 +335,39 @@
                        android:src="@drawable/ic_baseline_camera_alt_24" />
                </LinearLayout>
 
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="10dp"
+                   android:gravity="center"
+                   android:orientation="vertical"
+                   android:padding="10dp">
+
+
+                   <LinearLayout
+                       android:id="@+id/layout_gridmig"
+                       android:layout_width="0dp"
+                       android:layout_height="0dp"
+                       android:layout_margin="10dp"
+                       android:gravity="center"
+                       android:orientation="vertical"
+                       android:visibility="invisible">
+
+                       <GridView
+                           android:id="@+id/gridview"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_margin="20dp"
+                           android:clickable="true"
+                           android:columnWidth="115dp"
+                           android:drawSelectorOnTop="true"
+                           android:numColumns="3"
+                           android:verticalSpacing="10dp" />
+
+                   </LinearLayout>
+
+               </LinearLayout>
+
                <!-- -->
                <LinearLayout
                    android:gravity="center"
