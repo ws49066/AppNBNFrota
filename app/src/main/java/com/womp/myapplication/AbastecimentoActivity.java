@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -55,22 +56,14 @@ import java.util.Map;
 public class AbastecimentoActivity extends AppCompatActivity {
 
     LinearLayout dinamicoLayout;
-
-
     RadioGroup groupTipoComb;
     RadioButton buttonCombustivel;
-
     TextView modelo,cor;
     EditText kmatual,litros,req;
-
     Button salvar;
-
     ArrayList<String> placas = new ArrayList<String>();
-
     String combustivel,idveiculo;
-
     ImageView tirafoto;
-
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     Bitmap bitimagem ;
     Integer cont;
@@ -236,7 +229,6 @@ public class AbastecimentoActivity extends AppCompatActivity {
         else{
             Toast.makeText(getApplicationContext(),"Limite de fotos atingido",Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public File criarImagem() throws IOException {
@@ -249,6 +241,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
 
     public void getPlacas() {
         StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/getPlacas.php",

@@ -43,6 +43,7 @@
 
            <!-- Seach Placa -->
            <LinearLayout
+               android:gravity="center"
                android:orientation="vertical"
                android:layout_width="match_parent"
                android:layout_height="wrap_content">
@@ -100,13 +101,15 @@
            <!-- Layout Dinamica -->
            <LinearLayout
                android:id="@+id/LayoutDinamico"
-               android:visibility="invisible"
+               android:visibility="visible"
                android:layout_marginTop="15dp"
                android:orientation="vertical"
                android:layout_width="match_parent"
                android:layout_height="match_parent">
 
                 <!-- Modelo -->
+
+               <!-- Cor -->
                <LinearLayout
                    android:layout_width="match_parent"
                    android:layout_height="40dp"
@@ -124,20 +127,18 @@
 
                    <TextView
                        android:id="@+id/modelo"
-                       android:textSize="15dp"
-                       android:gravity="center_vertical"
-                       android:textColor="@color/white"
-                       android:layout_width="130dp"
+                       android:layout_width="389dp"
                        android:layout_height="match_parent"
                        android:layout_marginRight="40dp"
                        android:layout_weight=".28"
-                       android:orientation="horizontal">
-                   </TextView>
+                       android:gravity="center_vertical"
+                       android:orientation="horizontal"
+                       android:textColor="@color/white"
+                       android:textSize="15dp"></TextView>
 
 
                </LinearLayout>
 
-               <!-- Cor -->
                <LinearLayout
                    android:layout_width="match_parent"
                    android:layout_height="40dp"
