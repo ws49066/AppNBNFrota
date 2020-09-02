@@ -60,7 +60,7 @@ public class CadastroUsuario extends AppCompatActivity {
     }
 
     private void SalvarDadosUsuario() {
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/cadUsuario.php", new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/cadUsuario.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if(response.contains("erro")){

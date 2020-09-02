@@ -44,9 +44,11 @@
 
             <!-- Seach Placa -->
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="369dp"
                     android:layout_height="40dp"
@@ -71,7 +73,7 @@
                         android:orientation="horizontal">
 
                         <Spinner
-                            android:id="@+id/spinnerPlacaManu"
+                            android:id="@+id/spinnerPlaca"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
@@ -92,14 +94,14 @@
                             android:layout_marginBottom="0dp"
                             android:src="@drawable/dropdown" />
                     </RelativeLayout>
-
-
                 </LinearLayout>
             </LinearLayout>
 
 
+
             <!-- Layout Dinamica -->
             <LinearLayout
+                android:gravity="center"
                 android:id="@+id/LayoutDinamicoManutencao"
                 android:visibility="invisible"
                 android:layout_marginTop="10dp"
@@ -109,7 +111,7 @@
 
                 <!-- Modelo -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="40dp"
                     android:orientation="horizontal">
 
@@ -140,7 +142,7 @@
 
                 <!-- Cor -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="40dp"
                     android:orientation="horizontal">
 
@@ -172,12 +174,12 @@
 
                 <!-- KM ATUAL -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="40dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="120dp"
+                        android:layout_width="121dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="21dp"
                         android:gravity="center_vertical"
@@ -205,12 +207,12 @@
                 <!-- PEÇAS -->
                 <LinearLayout
                     android:layout_marginTop="8dp"
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="80dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="119dp"
+                        android:layout_width="121dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="8dp"
@@ -238,12 +240,12 @@
                 <!-- Valor -->
                 <LinearLayout
                     android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="40dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="118dp"
+                        android:layout_width="121dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="20dp"
                         android:gravity="center_vertical"
@@ -269,13 +271,13 @@
                 <!-- SERVIÇOS -->
                 <!-- Valor -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="80dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="115dp"
+                        android:layout_width="121dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="8dp"
@@ -302,12 +304,12 @@
 
                 <LinearLayout
                     android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="40dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="121dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="20dp"
                         android:gravity="center_vertical"
@@ -332,12 +334,12 @@
 
                 <LinearLayout
                     android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="40dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="115dp"
+                        android:layout_width="120dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="20dp"
                         android:gravity="center_vertical"
@@ -362,7 +364,7 @@
 
                 <!-- Fotos -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="94dp">
 
                     <ImageView
@@ -374,7 +376,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:gravity="center"
@@ -409,7 +411,7 @@
                 <!-- -->
                 <LinearLayout
                     android:gravity="center"
-                    android:layout_width="match_parent"
+                    android:layout_width="426dp"
                     android:layout_height="match_parent">
 
                     <Button

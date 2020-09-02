@@ -29,15 +29,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
         SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
-
-
-
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -56,7 +49,7 @@ public class SplashActivity extends AppCompatActivity {
 
     public void autenticado(){
 
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/login.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/login.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

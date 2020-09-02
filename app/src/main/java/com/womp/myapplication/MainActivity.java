@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Função sera chamado caso o Sqlite não retorne usuario True
     public void login(){
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/login.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/login.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

@@ -68,7 +68,7 @@ public class CadastroVeiculo extends AppCompatActivity {
 
 
     public void SalvarDadosCarro(){
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/cadVeiculo.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/cadVeiculo.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

@@ -363,7 +363,7 @@ public class ManutencaoAcitivity extends AppCompatActivity {
 
 
     public void getPlacas() {
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/getPlacas.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/getPlacas.php",
                 new Response.Listener<String>() {
                     JSONArray arrayplacas = new JSONArray();
                     @Override
@@ -379,9 +379,11 @@ public class ManutencaoAcitivity extends AppCompatActivity {
                                 }else{
                                     arrayplacas = obj.getJSONArray("placas");
                                     for (int i=0; i< arrayplacas.length(); i++){
-                                        placas.add(arrayplacas.getString(i));
+                                        JSONObject jsonObject = arrayplacas.getJSONObject(i);
+                                        String placa = jsonObject.getString("placa");
+                                        placas.add(placa);
                                     }
-                                    Spinner spinner = (Spinner) findViewById(R.id.spinnerPlacaManu);
+                                    Spinner spinner = (Spinner) findViewById(R.id.spinnerPlaca);
 
                                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_text,placas);
                                     spinner.setAdapter(adapter);
@@ -425,10 +427,11 @@ public class ManutencaoAcitivity extends AppCompatActivity {
     }
 
     private void getDetailsVei(String PlacaSelecionada){
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/getDadosVeiculos.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/getDadosVeiculos.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        JSONArray arrayplacas = new JSONArray();
                         if (response.contains("erro")) {
                         }else{
                             try {
@@ -438,9 +441,12 @@ public class ManutencaoAcitivity extends AppCompatActivity {
 
                                 }
                                 else{
-                                    idveiculo = obj.getString("id");
-                                    modelo.setText(obj.getString("modelo"));
-                                    cor.setText(obj.getString("cor"));
+                                    arrayplacas = obj.getJSONArray("modelo");
+                                    JSONObject jsonObject = arrayplacas.getJSONObject(0);
+                                    idveiculo = jsonObject.getString("idveiculo");
+                                    System.out.println(idveiculo);
+                                    modelo.setText(jsonObject.getString("modelo"));
+                                    cor.setText(jsonObject.getString("cor"));
                                     dinamicoLayout.setVisibility(View.VISIBLE);
                                 }
                             } catch (JSONException e) {
@@ -468,7 +474,7 @@ public class ManutencaoAcitivity extends AppCompatActivity {
 
 
     public void SalvarManutencao(){
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/manutencao.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/manutencao.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

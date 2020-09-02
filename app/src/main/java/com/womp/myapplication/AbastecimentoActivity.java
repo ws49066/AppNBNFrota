@@ -5,14 +5,17 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.slice.Slice;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
@@ -59,7 +62,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
     RadioGroup groupTipoComb;
     RadioButton buttonCombustivel;
     TextView modelo,cor;
-    EditText kmatual,litros,req;
+    EditText kmatual,litros,requisicao;
     Button salvar;
     ArrayList<String> placas = new ArrayList<String>();
     String combustivel,idveiculo;
@@ -68,10 +71,10 @@ public class AbastecimentoActivity extends AppCompatActivity {
     Bitmap bitimagem ;
     Integer cont;
     List<String> ImagensStringList = new ArrayList<>(); // nome da foto tirada
-    List<String> encoded_list = new ArrayList<>();
     List<File> CaminhosFotos = new ArrayList<File>(); // caminho da foto na Raiz Celular
     LinearLayout layoutgridimg;
-    String NomeFotoTirada,mCurrentPhotoPath,Nomefoto,encoded_string;
+    String NomeFotoTirada,mCurrentPhotoPath,Nomefoto;
+    List<String> encoded_string = new ArrayList<String>();
 
     int quantfotos = 0;
     private GridView imageGrid;
@@ -81,11 +84,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_abastecimento);
-
-
-
         getPlacas();
-
         imageGrid = (GridView) findViewById(R.id.gridview);
         BitmapListmg = new ArrayList<Bitmap>();
         layoutgridimg = (LinearLayout) findViewById(R.id.layout_gridmig);
@@ -114,7 +113,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
         cor = (TextView) findViewById(R.id.cor);
         kmatual = (EditText) findViewById(R.id.kmatual);
         litros = (EditText) findViewById(R.id.litros);
-        req = (EditText) findViewById(R.id.numeroRequisicao);
+        requisicao = (EditText) findViewById(R.id.numeroRequisicao);
         tirafoto = (ImageView) findViewById(R.id.ImgBtn_foto);
         salvar = (Button) findViewById(R.id.btn_salvar);
 
@@ -127,7 +126,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 if (combustivel.equals("Gas.")){
                     combustivel = "Gasolina";
                 }
-                SalvarAbastecimento();
+                SalvarDados();
             }
         });
 
@@ -158,54 +157,54 @@ public class AbastecimentoActivity extends AppCompatActivity {
                     matrix.setRotate(graus);
                     Bitmap newBitmapRotate = Bitmap.createBitmap(bitimagem, 0,0, bitimagem.getWidth(),bitimagem.getHeight(),matrix,true);
                     BitmapListmg.add(newBitmapRotate);
-                    imageGrid.setAdapter(new ImageAdapter(this, this.BitmapListmg));
-                    newBitmapRotate.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
-                    byte[] imgBytes = byteArrayOutputStream.toByteArray();
-                    encoded_string = Base64.encodeToString(imgBytes,Base64.DEFAULT);
+                    imageGrid.setAdapter(new ImageAdapter(getApplicationContext(), this.BitmapListmg));
                     Nomefoto = NomeFotoTirada;
-
-                    StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/fotos.php",
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    if(response.equals("erro")){
-                                        Toast.makeText(getApplicationContext(),"Erro ao enviar foto posicao : " + cont,Toast.LENGTH_SHORT).show();
-                                    }else{
-
-                                    }
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-                    }) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            HashMap<String,String> map = new HashMap<>();
-                            map.put("encoded_string",encoded_string);
-                            map.put("image_name",Nomefoto);
-                            return map;
-                        }
-                    };
-                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                    requestQueue.add(request);
-                    finish();
-
                     //===== FAZER O AJUSTE DA VIEW
                     if(quantfotos == 1){
                         layoutgridimg.setVisibility(View.VISIBLE);
-                        layoutgridimg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,500));
+                        layoutgridimg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,300));
                     }
                     if(quantfotos == 4){
-                        layoutgridimg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,1000));
+                        layoutgridimg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,600));
                     }
-
                 }
             }
         }catch (Exception error){
             error.printStackTrace();
         }
+    }
+
+    public void SalvarFotos(int i){
+        BitmapListmg.get(i).compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+        byte[] imgBytes = byteArrayOutputStream.toByteArray();
+                    String photo = Base64.encodeToString(imgBytes,Base64.DEFAULT);
+                    String name = ImagensStringList.get(i);
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/fotos.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if(response.equals("erro")){
+                            Toast.makeText(getApplicationContext(),"Erro ao enviar foto posicao : " + cont,Toast.LENGTH_SHORT).show();
+                        }else{
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String,String> map = new HashMap<>();
+                map.put("encoded_string",photo);
+                map.put("image_name",name);
+                return map;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(request);
     }
 
     public void tiraFoto(){
@@ -244,7 +243,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
 
 
     public void getPlacas() {
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/getPlacas.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/getPlacas.php",
                 new Response.Listener<String>() {
                     JSONArray arrayplacas = new JSONArray();
                     @Override
@@ -260,9 +259,11 @@ public class AbastecimentoActivity extends AppCompatActivity {
                                 }else{
                                     arrayplacas = obj.getJSONArray("placas");
                                     for (int i=0; i< arrayplacas.length(); i++){
-                                        placas.add(arrayplacas.getString(i));
+                                        JSONObject jsonObject = arrayplacas.getJSONObject(i);
+                                        String placa = jsonObject.getString("placa");
+                                        placas.add(placa);
                                     }
-                                    Spinner spinner = (Spinner) findViewById(R.id.spinnerPlaca);
+                                    Spinner spinner = (Spinner) findViewById(R.id.spinnerPlacaManu);
 
                                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_text,placas);
                                     spinner.setAdapter(adapter);
@@ -305,23 +306,38 @@ public class AbastecimentoActivity extends AppCompatActivity {
         fila.add(request);
     }
 
+    private void SalvarDados(){
+        System.out.println(requisicao.getText().toString());
+        SalvarAbastecimento();
+        if(!BitmapListmg.isEmpty()){
+            for (int i=0; i<BitmapListmg.size(); i++){
+                System.out.println("Loop "+i);
+                SalvarFotos(i);
+            }
+        }
+
+    }
+
     private void getDetailsVei(String PlacaSelecionada){
-            StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/getDadosVeiculos.php",
+            StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/getDadosVeiculos.php",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
+
                             if (response.contains("erro")) {
                             }else{
                                 try {
                                     JSONObject obj = new JSONObject(response);
-
                                     if (obj.isNull("modelo")){
 
                                     }
                                     else{
-                                        idveiculo = obj.getString("id");
-                                        modelo.setText(obj.getString("modelo"));
-                                        cor.setText(obj.getString("cor"));
+                                        JSONArray arrayplacas ;
+                                        arrayplacas = obj.getJSONArray("modelo");
+                                        JSONObject jsonObject = arrayplacas.getJSONObject(0);
+                                        idveiculo = jsonObject.getString("idveiculo");
+                                        modelo.setText(jsonObject.getString("modelo"));
+                                        cor.setText(jsonObject.getString("cor"));
                                         dinamicoLayout.setVisibility(View.VISIBLE);
                                     }
                                 } catch (JSONException e) {
@@ -348,7 +364,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
     }
 
     public void SalvarAbastecimento(){
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/abastecimento.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/abastecimento.php",
                 new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -357,7 +373,6 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 }else{
                     Toast.makeText(getApplicationContext(),"Cadastro Realizado com Sucesso",Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(AbastecimentoActivity.this,MenuActivity.class));
-                    finish();
                 }
             }
         }, new Response.ErrorListener() {
@@ -372,7 +387,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 param.put("kmatual",kmatual.getText().toString());
                 param.put("combustivel",combustivel);
                 param.put("litros",litros.getText().toString());
-                param.put("requesicao",req.getText().toString());
+                param.put("requisicao",requisicao.getText().toString());
                 param.put("nomedasfotos",ImagensStringList.toString());
                 param.put("idveiculo",idveiculo.toString());
                 return param;

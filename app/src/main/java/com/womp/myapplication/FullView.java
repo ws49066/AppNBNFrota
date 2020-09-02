@@ -29,18 +29,11 @@ public class FullView extends AppCompatActivity {
         if(extras != null){
             caminho = (File) extras.get("caminho");
             bit_img = BitmapFactory.decodeFile(caminho.getAbsolutePath());
-
             float graus = 90;
             Matrix matrix = new Matrix();
             matrix.setRotate(graus);
-
             Bitmap newBitmapRotate = Bitmap.createBitmap(bit_img, 0,0, bit_img.getWidth(),bit_img.getHeight(),matrix,true);
-
-
             imageView.setImageBitmap(newBitmapRotate);
         }
-
-
-
     }
 }
