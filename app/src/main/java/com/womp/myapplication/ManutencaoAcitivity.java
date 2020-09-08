@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -62,21 +63,13 @@ import java.util.Map;
 public class ManutencaoAcitivity extends AppCompatActivity {
 
     LinearLayout dinamicoLayout;
-
     MoneyTextView Moneyvalortotal;
-
     float valorpecas,valorservicos,valortotal;
-
     TextView modelo,cor;
     EditText kmatual,pecas,servicos,editvalorpecas,editvalorservicos;
-
     Button salvar;
-
-
     ArrayList<String> placas = new ArrayList<String>();
-
     String idveiculo;
-
     ImageView tirafoto;
 
     // Imagens VARIAVEIS
@@ -87,8 +80,9 @@ public class ManutencaoAcitivity extends AppCompatActivity {
     List<String> encoded_list = new ArrayList<>();
     List<File> CaminhosFotos = new ArrayList<File>(); // caminho da foto na Raiz Celular
     LinearLayout layoutgridimg;
-    String NomeFotoTirada,mCurrentPhotoPath,Nomefoto,encoded_string;
+    String NomeFotoTirada,mCurrentPhotoPath,Nomefoto,iduser;
 
+    private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
     int quantfotos = 0;
     private GridView imageGrid;
     private ArrayList<Bitmap> BitmapListmg;
@@ -99,6 +93,11 @@ public class ManutencaoAcitivity extends AppCompatActivity {
         setContentView(R.layout.activity_manutencao_acitivity);
 
         getPlacas();
+
+        SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
+        if (preferences.contains("id")){
+            iduser = preferences.getString("id",null);
+        }
 
         imageGrid = (GridView) findViewById(R.id.gridview);
         BitmapListmg = new ArrayList<Bitmap>();
@@ -243,7 +242,7 @@ public class ManutencaoAcitivity extends AppCompatActivity {
                 ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo networkInfo = cm.getActiveNetworkInfo();
                 if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
-                    SalvarManutencao();
+                    SalvarDados();
                 }else {
                     Toast.makeText(getApplicationContext(),"Dispositivo não está conectado á Internet",Toast.LENGTH_LONG).show();
                 }
@@ -278,37 +277,7 @@ public class ManutencaoAcitivity extends AppCompatActivity {
                     Bitmap newBitmapRotate = Bitmap.createBitmap(bitimagem, 0,0, bitimagem.getWidth(),bitimagem.getHeight(),matrix,true);
                     BitmapListmg.add(newBitmapRotate);
                     imageGrid.setAdapter(new ImageAdapter(this, this.BitmapListmg));
-                    newBitmapRotate.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
-                    byte[] imgBytes = byteArrayOutputStream.toByteArray();
-                    encoded_string = Base64.encodeToString(imgBytes,Base64.DEFAULT);
                     Nomefoto = NomeFotoTirada;
-
-                    StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/controles/fotos.php",
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    if(response.equals("erro")){
-                                        Toast.makeText(getApplicationContext(),"Erro ao enviar foto posicao : " + cont,Toast.LENGTH_SHORT).show();
-                                    }else{
-
-                                    }
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-                    }) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            HashMap<String,String> map = new HashMap<>();
-                            map.put("encoded_string",encoded_string);
-                            map.put("image_name",Nomefoto);
-                            return map;
-                        }
-                    };
-                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                    requestQueue.add(request);
 
                     //===== FAZER O AJUSTE DA VIEW
                     if(quantfotos == 1){
@@ -325,6 +294,52 @@ public class ManutencaoAcitivity extends AppCompatActivity {
             error.printStackTrace();
         }
     }
+
+    private void SalvarDados(){
+        if(!BitmapListmg.isEmpty()){
+            for (int i=0; i<BitmapListmg.size(); i++){
+                System.out.println("Loop "+i);
+                SalvarFotos(BitmapListmg.get(i),ImagensStringList.get(i));
+            }
+            SalvarManutencao();
+        }
+
+    }
+
+    public void SalvarFotos(Bitmap bitImg, String nameimg){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitImg.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+        byte[] imgBytes = byteArrayOutputStream.toByteArray();
+        String photo = Base64.encodeToString(imgBytes,Base64.DEFAULT);
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/fotos.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if(response.equals("erro")){
+                            Toast.makeText(getApplicationContext(),"Erro ao enviar foto posicao : " + cont,Toast.LENGTH_SHORT).show();
+                        }else{
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String,String> map = new HashMap<>();
+                map.put("encoded_string",photo);
+                map.put("image_name",nameimg);
+                return map;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(request);
+    }
+
 
     public void tiraFoto(){
         File photoFile = null;
@@ -371,6 +386,7 @@ public class ManutencaoAcitivity extends AppCompatActivity {
                         if (response.isEmpty()) {
                             Toast.makeText(getApplicationContext(),"VAZIO", Toast.LENGTH_SHORT).show();
                         }else{
+                            placas.add("");
                             try {
                                 JSONObject obj = new JSONObject(response);
 
@@ -503,6 +519,7 @@ public class ManutencaoAcitivity extends AppCompatActivity {
                 param.put("valortotal", Float.toString(valortotal));
                 param.put("nomedasfotos",ImagensStringList.toString());
                 param.put("idveiculo",idveiculo);
+                param.put("iduser",iduser);
                 return param;
             }
         };

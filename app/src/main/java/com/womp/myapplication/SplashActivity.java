@@ -22,6 +22,7 @@ import java.util.Map;
 public class SplashActivity extends AppCompatActivity {
 
     private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
+    private   final String ARQUIVO_IDUSER = "iduser";
 
     public  String user,pass;
 
@@ -55,6 +56,7 @@ public class SplashActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         if (response.contains("erro")) {
                         }else{
+
                             Intent intentEnviar = new Intent(SplashActivity.this, MenuActivity.class);
                             startActivity(intentEnviar);
                             finish();
