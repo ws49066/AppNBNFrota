@@ -2,7 +2,13 @@ package com.womp.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +36,7 @@ public class CadastroVeiculo extends AppCompatActivity {
     EditText marca,modelo,cor,ano,placa,chassis,roda;
 
     Button btn_salvarVeiculo;
+ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +67,56 @@ public class CadastroVeiculo extends AppCompatActivity {
                 if (tipoComb.equals("Gas.")){
                     tipoComb = "Gasolina";
                 }
-                SalvarDadosCarro();
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+                    progressDialog = new ProgressDialog(CadastroVeiculo.this);
+                    progressDialog.show();
+                    progressDialog.setContentView(R.layout.progress_dialog);
+                    progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    SalvarDadosCarro();
+                }else {
+                    Toast.makeText(getApplicationContext(),"Dispositivo não está conectado á Internet",Toast.LENGTH_LONG).show();
+                }
+
             }
         });
     }
 
+    public void exibirConfirmacao(){
+        AlertDialog.Builder msgbox = new AlertDialog.Builder(this);
+        msgbox.setTitle("Excluindo....");
+        msgbox.setIcon(android.R.drawable.ic_menu_delete);
+        msgbox.setMessage("Tem certeza que deseja cancelar ?");
 
+        msgbox.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progressDialog = new ProgressDialog(CadastroVeiculo.this);
+                progressDialog.show();
+                progressDialog.setContentView(R.layout.progress_dialog);
+                progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                Intent intentEnviar = new Intent(CadastroVeiculo.this, MenuActivity.class);
+                startActivity(intentEnviar);
+                finish();
+            }
+
+        });
+
+        msgbox.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        msgbox.show();
+    }
+
+    public void onBackPressed(){
+
+        exibirConfirmacao();
+    }
 
     public void SalvarDadosCarro(){
         StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/cadVeiculo.php",

@@ -2,6 +2,7 @@ package com.womp.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     public  String user,pass;
 
     private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +87,16 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),"Erro usuario ou senha"+response, Toast.LENGTH_SHORT).show();
 
                         }else{
+                            progressDialog = new ProgressDialog(MainActivity.this);
+                            progressDialog.show();
+                            progressDialog.setContentView(R.layout.progress_dialog);
+                            progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                             String Array[] = new String[2];
                             Array = response.split(",");
                             String var_name_user = Array[0];
                             String id_login_user = Array[1];
+                            String tipo = Array[2];
+                            System.out.println("Tipo: "+ tipo);
                             String usuario = edt_user.getText().toString();
                             String senha = edit_password.getText().toString();
                             SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
@@ -96,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                             if(salvarAutenticacao.isChecked()){
                                 editor.putString("user",usuario);
                                 editor.putString("pass",senha);
+                                editor.putString("tipo",tipo);
                             }
                             editor.putString("id",id_login_user);
                             editor.commit();

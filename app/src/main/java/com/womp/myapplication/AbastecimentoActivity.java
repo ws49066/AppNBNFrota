@@ -5,8 +5,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.slice.Slice;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -59,6 +62,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class AbastecimentoActivity extends AppCompatActivity {
 
     LinearLayout dinamicoLayout;
@@ -70,6 +74,8 @@ public class AbastecimentoActivity extends AppCompatActivity {
     ArrayList<String> placas = new ArrayList<String>();
     String combustivel,idveiculo;
     ImageView tirafoto;
+
+    ProgressDialog progressDialog;
 
     Bitmap bitimagem ;
     Integer cont;
@@ -135,12 +141,14 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 if (combustivel.equals("Gas.")){
                     combustivel = "Gasolina";
                 }
-                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-                if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
-                    SalvarDados();
-                }else {
-                    Toast.makeText(getApplicationContext(),"Dispositivo não está conectado á Internet",Toast.LENGTH_LONG).show();
+                if(kmatual.getText().toString().matches("") || litros.getText().toString().matches("") || requisicao.getText().toString().matches("")){
+                    Toast.makeText(getApplicationContext(), "Preencha todos os campos", Toast.LENGTH_LONG).show();
+                }else{
+                    progressDialog = new ProgressDialog(AbastecimentoActivity.this);
+                    progressDialog.show();
+                    progressDialog.setContentView(R.layout.progress_dialog);
+                    progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                        SalvarDados();
                 }
             }
         });
@@ -191,7 +199,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
 
     public void SalvarFotos(Bitmap bitImg, String nameimg){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitImg.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+        bitImg.compress(Bitmap.CompressFormat.JPEG,10,byteArrayOutputStream);
         byte[] imgBytes = byteArrayOutputStream.toByteArray();
         String photo = Base64.encodeToString(imgBytes,Base64.DEFAULT);
         StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/fotos.php",
@@ -329,7 +337,15 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 System.out.println("Loop "+i);
                 SalvarFotos(BitmapListmg.get(i),ImagensStringList.get(i));
             }
+
+        }
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+
             SalvarAbastecimento();
+        }else {
+            Toast.makeText(getApplicationContext(),"Dispositivo não está conectado á Internet",Toast.LENGTH_LONG).show();
         }
 
     }
@@ -380,6 +396,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
     }
 
     public void SalvarAbastecimento(){
+
         StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/abastecimento.php",
                 new Response.Listener<String>() {
             @Override
@@ -387,6 +404,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 if(response.equals("erro")){
                     Toast.makeText(getApplicationContext(),"Houve um erro", Toast.LENGTH_SHORT).show();
                 }else{
+
                     Toast.makeText(getApplicationContext(),"Cadastro Realizado com Sucesso",Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(AbastecimentoActivity.this,MenuActivity.class));
                     finish();
@@ -424,4 +442,38 @@ public class AbastecimentoActivity extends AppCompatActivity {
         buttonCombustivel = findViewById(radioIDComb);
     }
 
+    public void exibirConfirmacao(){
+        AlertDialog.Builder msgbox = new AlertDialog.Builder(this);
+        msgbox.setTitle("Excluindo....");
+        msgbox.setIcon(android.R.drawable.ic_menu_delete);
+        msgbox.setMessage("Tem certeza que deseja cancelar ?");
+
+        msgbox.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progressDialog = new ProgressDialog(AbastecimentoActivity.this);
+                progressDialog.show();
+                progressDialog.setContentView(R.layout.progress_dialog);
+                progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                Intent intentEnviar = new Intent(AbastecimentoActivity.this, MenuActivity.class);
+                startActivity(intentEnviar);
+                finish();
+            }
+
+        });
+
+        msgbox.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        msgbox.show();
+    }
+
+    public void onBackPressed(){
+
+        exibirConfirmacao();
+    }
 }

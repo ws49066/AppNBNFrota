@@ -11,17 +11,18 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ManutencaoAcitivity"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".CheckList"></activity>
+        <activity android:name=".ManutencaoAcitivity" />
         <activity android:name=".CadastroVeiculo" />
         <activity android:name=".CadastroUsuario" />
-        <activity android:name=".FullView"></activity>
+        <activity android:name=".FullView" />
         <activity android:name=".AbastecimentoActivity" />
         <activity android:name=".MenuActivity" />
         <activity android:name=".MainActivity" />
@@ -32,6 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.womp.myapplication"

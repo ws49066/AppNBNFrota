@@ -2,11 +2,13 @@ package com.womp.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -22,9 +24,9 @@ import java.util.Map;
 public class SplashActivity extends AppCompatActivity {
 
     private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
-    private   final String ARQUIVO_IDUSER = "iduser";
 
-    public  String user,pass;
+    public  String user,pass, tipo;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,10 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                progressDialog = new ProgressDialog(SplashActivity.this);
+                progressDialog.show();
+                progressDialog.setContentView(R.layout.progress_dialog);
+                progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 if (preferences.contains("user") && preferences.contains("pass")){
                     user = preferences.getString("user",null);
                     pass = preferences.getString("pass",null);
@@ -55,6 +61,7 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         if (response.contains("erro")) {
+                            Toast.makeText(getApplicationContext(), "Houveu um erro, contate o administrador", Toast.LENGTH_LONG).show();
                         }else{
 
                             Intent intentEnviar = new Intent(SplashActivity.this, MenuActivity.class);

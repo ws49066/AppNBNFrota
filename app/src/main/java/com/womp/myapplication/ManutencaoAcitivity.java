@@ -6,6 +6,7 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -80,7 +81,8 @@ public class ManutencaoAcitivity extends AppCompatActivity {
     List<String> encoded_list = new ArrayList<>();
     List<File> CaminhosFotos = new ArrayList<File>(); // caminho da foto na Raiz Celular
     LinearLayout layoutgridimg;
-    String NomeFotoTirada,mCurrentPhotoPath,Nomefoto,iduser;
+    String NomeFotoTirada,mCurrentPhotoPath,Nomefoto,iduser, tipouser;
+    ProgressDialog progressDialog;
 
     private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
     int quantfotos = 0;
@@ -97,7 +99,12 @@ public class ManutencaoAcitivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
         if (preferences.contains("id")){
             iduser = preferences.getString("id",null);
+
         }
+
+
+
+
 
         imageGrid = (GridView) findViewById(R.id.gridview);
         BitmapListmg = new ArrayList<Bitmap>();
@@ -239,12 +246,20 @@ public class ManutencaoAcitivity extends AppCompatActivity {
         salvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-                if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
-                    SalvarDados();
-                }else {
-                    Toast.makeText(getApplicationContext(),"Dispositivo não está conectado á Internet",Toast.LENGTH_LONG).show();
+                if(kmatual.getText().toString().matches("") || pecas.getText().toString().matches("") ||
+                        servicos.getText().toString().matches("") ||
+                        editvalorpecas.getText().toString().matches("") ||
+                        editvalorservicos.getText().toString().matches("")){
+                    Toast.makeText(getApplicationContext(), "Preencha todos os campos", Toast.LENGTH_LONG).show();
+                }else{
+                    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+                    if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+                        SalvarDados();
+                    }else {
+                        Toast.makeText(getApplicationContext(),"Dispositivo não está conectado á Internet",Toast.LENGTH_LONG).show();
+                    }
+
                 }
 
             }
@@ -256,6 +271,41 @@ public class ManutencaoAcitivity extends AppCompatActivity {
                 tiraFoto();
             }
         });
+    }
+
+    public void exibirConfirmacao(){
+        AlertDialog.Builder msgbox = new AlertDialog.Builder(this);
+        msgbox.setTitle("Excluindo....");
+        msgbox.setIcon(android.R.drawable.ic_menu_delete);
+        msgbox.setMessage("Tem certeza que deseja cancelar ?");
+
+        msgbox.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progressDialog = new ProgressDialog(ManutencaoAcitivity.this);
+                progressDialog.show();
+                progressDialog.setContentView(R.layout.progress_dialog);
+                progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                Intent intentEnviar = new Intent(ManutencaoAcitivity.this, MenuActivity.class);
+                startActivity(intentEnviar);
+                finish();
+            }
+
+        });
+
+        msgbox.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        msgbox.show();
+    }
+
+    public void onBackPressed(){
+
+        exibirConfirmacao();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
@@ -308,7 +358,7 @@ public class ManutencaoAcitivity extends AppCompatActivity {
 
     public void SalvarFotos(Bitmap bitImg, String nameimg){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitImg.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+        bitImg.compress(Bitmap.CompressFormat.JPEG,10,byteArrayOutputStream);
         byte[] imgBytes = byteArrayOutputStream.toByteArray();
         String photo = Base64.encodeToString(imgBytes,Base64.DEFAULT);
         StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/fotos.php",
