@@ -26,15 +26,11 @@ import android.util.Base64;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,10 +59,9 @@ import java.util.Map;
 
 public class ManutencaoAcitivity extends AppCompatActivity {
 
-    LinearLayout dinamicoLayout;
     MoneyTextView Moneyvalortotal;
     float valorpecas,valorservicos,valortotal;
-    TextView modelo,cor;
+    TextView modelo,cor,placa;
     EditText kmatual,pecas,servicos,editvalorpecas,editvalorservicos;
     Button salvar;
     ArrayList<String> placas = new ArrayList<String>();
@@ -80,7 +75,6 @@ public class ManutencaoAcitivity extends AppCompatActivity {
     List<String> ImagensStringList = new ArrayList<>(); // nome da foto tirada
     List<String> encoded_list = new ArrayList<>();
     List<File> CaminhosFotos = new ArrayList<File>(); // caminho da foto na Raiz Celular
-    LinearLayout layoutgridimg;
     String NomeFotoTirada,mCurrentPhotoPath,Nomefoto,iduser, tipouser;
     ProgressDialog progressDialog;
 
@@ -94,21 +88,18 @@ public class ManutencaoAcitivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manutencao_acitivity);
 
-        getPlacas();
-
         SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
         if (preferences.contains("id")){
             iduser = preferences.getString("id",null);
-
+            idveiculo = preferences.getString("idveiculo", null);
         }
 
-
+        getDetailsVei();
 
 
 
         imageGrid = (GridView) findViewById(R.id.gridview);
         BitmapListmg = new ArrayList<Bitmap>();
-        layoutgridimg = (LinearLayout) findViewById(R.id.layout_gridmig);
 
         //Permissão de CAMERA
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
@@ -127,17 +118,17 @@ public class ManutencaoAcitivity extends AppCompatActivity {
             }
         });
 
-        dinamicoLayout = (LinearLayout) findViewById(R.id.LayoutDinamicoManutencao);
-        modelo = (TextView) findViewById(R.id.modeloManu);
-        cor = (TextView) findViewById(R.id.corManu);
-        kmatual = (EditText) findViewById(R.id.kmatualManu);
+        modelo = (TextView) findViewById(R.id.modelo);
+        cor = (TextView) findViewById(R.id.cor);
+        placa = (TextView) findViewById(R.id.placa);
+        kmatual = (EditText) findViewById(R.id.kmatual);
         pecas = (EditText) findViewById(R.id.pecas);
         servicos= (EditText) findViewById(R.id.servicos);
         editvalorpecas = findViewById(R.id.editvalorpecas);
         editvalorservicos = findViewById(R.id.editvalorservicos);
         Moneyvalortotal = findViewById(R.id.valortotal);
-        tirafoto = (ImageView) findViewById(R.id.ImgBtn_foto_Manutencao);
-        salvar = (Button) findViewById(R.id.btn_salvar_Manutencao);
+        tirafoto = (ImageView) findViewById(R.id.ImgBtn_foto);
+        salvar = (Button) findViewById(R.id.btn_salvar);
 
 
 
@@ -326,23 +317,17 @@ public class ManutencaoAcitivity extends AppCompatActivity {
                     matrix.setRotate(graus);
                     Bitmap newBitmapRotate = Bitmap.createBitmap(bitimagem, 0,0, bitimagem.getWidth(),bitimagem.getHeight(),matrix,true);
                     BitmapListmg.add(newBitmapRotate);
-                    imageGrid.setAdapter(new ImageAdapter(this, this.BitmapListmg));
+
+                    imageGrid.setAdapter(new ImageAdapter(getApplicationContext(), this.BitmapListmg));
                     Nomefoto = NomeFotoTirada;
-
-                    //===== FAZER O AJUSTE DA VIEW
-                    if(quantfotos == 1){
-                        layoutgridimg.setVisibility(View.VISIBLE);
-                        layoutgridimg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,500));
-                    }
-                    if(quantfotos == 4){
-                        layoutgridimg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,1000));
-                    }
-
+                    imageGrid.setVisibility(View.VISIBLE);
                 }
             }
         }catch (Exception error){
             error.printStackTrace();
         }
+
+        progressDialog.hide();
     }
 
     private void SalvarDados(){
@@ -393,7 +378,7 @@ public class ManutencaoAcitivity extends AppCompatActivity {
 
     public void tiraFoto(){
         File photoFile = null;
-        if(quantfotos < 3){
+        if(quantfotos < 2){
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
             if(intent.resolveActivity(getPackageManager())!= null) {
                 try {
@@ -403,6 +388,10 @@ public class ManutencaoAcitivity extends AppCompatActivity {
                 }
 
                 if (photoFile != null) {
+                    progressDialog = new ProgressDialog(ManutencaoAcitivity.this);
+                    progressDialog.show();
+                    progressDialog.setContentView(R.layout.progress_dialog);
+                    progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                     Uri photoUri = FileProvider.getUriForFile(this, "com.womp.myapplication", photoFile);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                     startActivityForResult(intent, 10);
@@ -412,7 +401,6 @@ public class ManutencaoAcitivity extends AppCompatActivity {
         else{
             Toast.makeText(getApplicationContext(),"Limite de fotos atingido",Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public File criarImagem() throws IOException {
@@ -426,99 +414,39 @@ public class ManutencaoAcitivity extends AppCompatActivity {
         return image;
     }
 
+    private void getDetailsVei(){
 
-    public void getPlacas() {
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/getPlacas.php",
-                new Response.Listener<String>() {
-                    JSONArray arrayplacas = new JSONArray();
-                    @Override
-                    public void onResponse(String response) {
-                        if (response.isEmpty()) {
-                            Toast.makeText(getApplicationContext(),"VAZIO", Toast.LENGTH_SHORT).show();
-                        }else{
-                            placas.add("");
-                            try {
-                                JSONObject obj = new JSONObject(response);
-
-                                if (obj.isNull("placas")){
-
-                                }else{
-                                    arrayplacas = obj.getJSONArray("placas");
-                                    for (int i=0; i< arrayplacas.length(); i++){
-                                        JSONObject jsonObject = arrayplacas.getJSONObject(i);
-                                        String placa = jsonObject.getString("placa");
-                                        placas.add(placa);
-                                    }
-                                    Spinner spinner = (Spinner) findViewById(R.id.spinnerPlaca);
-
-                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_text,placas);
-                                    spinner.setAdapter(adapter);
-
-                                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                        @Override
-                                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                            Object item = parent.getItemAtPosition(position);
-                                            if (position != 0){
-                                                getDetailsVei(item.toString());
-                                                modelo.setText("");
-                                                cor.setText("");
-                                            }else{
-                                                dinamicoLayout.setVisibility(View.INVISIBLE);
-                                            }
-
-                                        }
-                                        @Override
-                                        public void onNothingSelected(AdapterView<?> parent) {
-
-                                        }
-                                    });
-
-
-
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }){
-        };
-        RequestQueue fila = Volley.newRequestQueue(this);
-        fila.add(request);
-    }
-
-    private void getDetailsVei(String PlacaSelecionada){
         StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/getDadosVeiculos.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        JSONArray arrayplacas = new JSONArray();
+                        progressDialog = new ProgressDialog(ManutencaoAcitivity.this);
+                        progressDialog.show();
+                        progressDialog.setContentView(R.layout.progress_dialog);
+                        progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
                         if (response.contains("erro")) {
                         }else{
                             try {
                                 JSONObject obj = new JSONObject(response);
-
                                 if (obj.isNull("modelo")){
 
                                 }
                                 else{
+                                    JSONArray arrayplacas ;
                                     arrayplacas = obj.getJSONArray("modelo");
                                     JSONObject jsonObject = arrayplacas.getJSONObject(0);
-                                    idveiculo = jsonObject.getString("idveiculo");
-                                    System.out.println(idveiculo);
                                     modelo.setText(jsonObject.getString("modelo"));
                                     cor.setText(jsonObject.getString("cor"));
-                                    dinamicoLayout.setVisibility(View.VISIBLE);
+                                    placa.setText(jsonObject.getString("placa"));
+
                                 }
                             } catch (JSONException e) {
+                                System.out.println("eroo json é tal333333");
                                 e.printStackTrace();
                             }
                         }
+                        progressDialog.hide();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -529,15 +457,13 @@ public class ManutencaoAcitivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String>  params = new HashMap<>();
-                params.put("placa",PlacaSelecionada);
+                params.put("idveiculo",idveiculo.toString());
                 return  params;
             }
         };
-        dinamicoLayout.setVisibility(View.INVISIBLE);
         RequestQueue fila = Volley.newRequestQueue(this);
         fila.add(request);
     }
-
 
     public void SalvarManutencao(){
         StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/manutencao.php",

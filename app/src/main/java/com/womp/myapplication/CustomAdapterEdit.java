@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class CustomAdapterEdit extends BaseAdapter {
         if(view == null){
             view = LayoutInflater.from(context).inflate(R.layout.row_edit, null);
             holder = new ViewHolder();
-            holder.relativeLayout = (RelativeLayout) view.findViewById(R.id.row_relative_layout_edit);
+            holder.relativeLayout = (ConstraintLayout) view.findViewById(R.id.row_relative_layout_edit);
             holder.TextView = (TextView) view.findViewById(R.id.rowedit);
             holder.editText = (EditText) view.findViewById(R.id.row_list_checkbox_image_edit);
 
@@ -95,7 +96,7 @@ public class CustomAdapterEdit extends BaseAdapter {
     }
 
     private class ViewHolder {
-        RelativeLayout relativeLayout;
+        ConstraintLayout relativeLayout;
         TextView TextView;
         EditText editText;
     }

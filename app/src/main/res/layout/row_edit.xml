@@ -1,28 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/row_relative_layout_edit"
     android:layout_height="wrap_content"
+    android:background="@color/nbncolor"
     android:orientation="horizontal">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.11" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.91" />
 
     <TextView
         android:id="@+id/rowedit"
-        android:layout_width="wrap_content"
+        android:layout_width="89dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="3dp"
-        android:padding="10dp"
-        android:text="Windows" />
+        android:gravity="center|center_vertical"
+        android:text="Windows"
+        android:textAlignment="gravity"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/row_list_checkbox_image_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColorHint="@color/white"
+        android:layout_width="226dp"
+        android:layout_height="40dp"
+        android:layout_toEndOf="@+id/rowedit"
+        android:backgroundTint="@color/white"
         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 "
-        android:textSize="12dp"
-        android:layout_toEndOf="@+id/rowedit"/>
-</RelativeLayout>
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rowedit"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

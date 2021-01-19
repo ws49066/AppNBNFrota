@@ -95,17 +95,17 @@ public class MainActivity extends AppCompatActivity {
                             Array = response.split(",");
                             String var_name_user = Array[0];
                             String id_login_user = Array[1];
-                            String tipo = Array[2];
-                            System.out.println("Tipo: "+ tipo);
+                            String idveiculo = Array[2];
+                            System.out.println("Tipo: "+ idveiculo);
                             String usuario = edt_user.getText().toString();
                             String senha = edit_password.getText().toString();
                             SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putString("nome",var_name_user);
+                            editor.putString("idveiculo",idveiculo);
                             if(salvarAutenticacao.isChecked()){
                                 editor.putString("user",usuario);
                                 editor.putString("pass",senha);
-                                editor.putString("tipo",tipo);
                             }
                             editor.putString("id",id_login_user);
                             editor.commit();

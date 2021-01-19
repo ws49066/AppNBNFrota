@@ -1,186 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
     android:background="@color/nbncolor"
-    tools:context=".MenuActivity">
+    android:fillViewport="true">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="250dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="78dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/frotalogoint" />
+
+        <ImageView
+            android:id="@+id/full"
+            android:layout_width="130dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="62dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/manutencao"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:srcCompat="@drawable/fuel" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:gravity="center_vertical|center"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="298dp"
-                android:gravity="center_horizontal|center_vertical"
-                android:orientation="vertical">
+            app:layout_constraintGuide_percent="0.16" />
 
-                <ImageView
-                    android:layout_width="283dp"
-                    android:layout_height="220dp"
-                    android:src="@drawable/logo" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.8442822" />
 
-            </LinearLayout>
+        <ImageView
+            android:id="@+id/manutencao"
+            android:layout_width="130dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="62dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/full"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:srcCompat="@drawable/manutencao" />
 
+        <ImageView
+            android:id="@+id/cadChecklist"
+            android:layout_width="130dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="38dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/logout"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/full"
+            app:srcCompat="@drawable/checklist" />
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/logout"
+            android:layout_width="130dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="38dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/cadChecklist"
+            app:layout_constraintTop_toBottomOf="@+id/manutencao"
+            app:srcCompat="@drawable/sair" />
 
-                //Menu Icon
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp">
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="v.1.0 "
+            android:textColor="#75FFFFFF"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/textView3"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintHorizontal_bias="0.508"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Copyright @ NBS"
+            android:textColor="#75FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintHorizontal_bias="0.493"
+            app:layout_constraintStart_toStartOf="@+id/guideline" />
 
-                        //Icon Left
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.89" />
 
-                        <LinearLayout
-                            android:layout_width="115dp"
-                            android:layout_height="100dp"
-                            android:gravity="left">
-
-                            <ImageView
-                                android:id="@+id/full"
-                                android:layout_width="93dp"
-                                android:layout_height="87dp"
-                                android:background="@drawable/fuel" />
-                        </LinearLayout>
-
-
-                        //Icon Right
-
-                        <LinearLayout
-                            android:layout_width="115dp"
-                            android:layout_height="100dp"
-                            android:gravity="right">
-
-                            <ImageView
-                                android:id="@+id/manutencao"
-                                android:layout_width="93dp"
-                                android:layout_height="87dp"
-                                android:background="@drawable/manutencao" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"></LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tipouser"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
-
-                    <LinearLayout
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp">
-
-                        //Icon Left
-                        <LinearLayout
-                            android:gravity="left"
-                            android:layout_width="115dp"
-                            android:layout_height="100dp">
-
-                            <ImageView
-                                android:id="@+id/cadCarro"
-                                android:layout_width="108dp"
-                                android:layout_height="75dp"
-                                android:background="@drawable/carro" />
-                        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+</ScrollView>
 
-                        //Icon Right
-                        <LinearLayout
-                            android:gravity="right"
-                            android:layout_width="115dp"
-                            android:layout_height="100dp">
-
-                            <ImageView
-                                android:id="@+id/cadUser"
-                                android:layout_width="98dp"
-                                android:layout_height="82dp"
-                                android:background="@drawable/caduser" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="16dp"></LinearLayout>
-
-                <LinearLayout
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp">
-
-                    <LinearLayout
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp">
-
-                        //Icon Left
-                        <LinearLayout
-                            android:gravity="left"
-                            android:layout_width="115dp"
-                            android:layout_height="100dp">
-
-                            <ImageView
-                                android:id="@+id/cadChecklist"
-                                android:layout_width="98dp"
-                                android:layout_height="87dp"
-                                android:background="@drawable/checklist" />
-                        </LinearLayout>
-
-
-
-                        //Icon Right
-                        <LinearLayout
-                            android:gravity="right"
-                            android:layout_width="115dp"
-                            android:layout_height="100dp">
-
-                            <ImageView
-                                android:id="@+id/logout"
-                                android:layout_width="88dp"
-                                android:layout_height="86dp"
-                                android:background="@drawable/sair" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>

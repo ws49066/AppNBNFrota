@@ -61,7 +61,9 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         if (response.contains("erro")) {
-                            Toast.makeText(getApplicationContext(), "Houveu um erro, contate o administrador", Toast.LENGTH_LONG).show();
+                            Intent intentEnviar = new Intent(SplashActivity.this, MainActivity.class);
+                            startActivity(intentEnviar);
+                            finish();
                         }else{
 
                             Intent intentEnviar = new Intent(SplashActivity.this, MenuActivity.class);
@@ -72,7 +74,8 @@ public class SplashActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                startActivity(new Intent(SplashActivity.this,MainActivity.class));
+                finish();
             }
         }){
             @Override

@@ -7,7 +7,6 @@ import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.app.slice.Slice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,15 +17,12 @@ import android.graphics.Matrix;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -34,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +39,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -68,10 +62,9 @@ public class AbastecimentoActivity extends AppCompatActivity {
     LinearLayout dinamicoLayout;
     RadioGroup groupTipoComb;
     RadioButton buttonCombustivel;
-    TextView modelo,cor;
+    TextView modelo,cor,placa;
     EditText kmatual,litros,requisicao;
     Button salvar;
-    ArrayList<String> placas = new ArrayList<String>();
     String combustivel,idveiculo;
     ImageView tirafoto;
 
@@ -81,7 +74,6 @@ public class AbastecimentoActivity extends AppCompatActivity {
     Integer cont;
     List<String> ImagensStringList = new ArrayList<>(); // nome da foto tirada
     List<File> CaminhosFotos = new ArrayList<File>(); // caminho da foto na Raiz Celular
-    LinearLayout layoutgridimg;
     String NomeFotoTirada,mCurrentPhotoPath,Nomefoto,iduser;
 
     private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
@@ -93,16 +85,21 @@ public class AbastecimentoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_abastecimento);
-        getPlacas();
 
         SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
         if (preferences.contains("id")){
             iduser = preferences.getString("id",null);
+            idveiculo = preferences.getString("idveiculo", null);
+
         }
+
+        System.out.println("Id veiculo "+idveiculo);
+
+        getDetailsVei();
+
 
         imageGrid = (GridView) findViewById(R.id.gridview);
         BitmapListmg = new ArrayList<Bitmap>();
-        layoutgridimg = (LinearLayout) findViewById(R.id.layout_gridmig);
 
         //Permissão de CAMERA
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
@@ -111,21 +108,12 @@ public class AbastecimentoActivity extends AppCompatActivity {
             }, 0);
         }
 
-        imageGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                File caminho = CaminhosFotos.get(position);
-                Intent intent = new Intent(AbastecimentoActivity.this,FullView.class);
-                intent.putExtra("caminho", caminho);
-                startActivity(intent);
-            }
-        });
-
         groupTipoComb = findViewById(R.id.tipodecombustivel);
 
         dinamicoLayout = (LinearLayout) findViewById(R.id.LayoutDinamico);
         modelo = (TextView) findViewById(R.id.modelo);
         cor = (TextView) findViewById(R.id.cor);
+        placa = (TextView) findViewById(R.id.placa);
         kmatual = (EditText) findViewById(R.id.kmatual);
         litros = (EditText) findViewById(R.id.litros);
         requisicao = (EditText) findViewById(R.id.numeroRequisicao);
@@ -133,8 +121,13 @@ public class AbastecimentoActivity extends AppCompatActivity {
         salvar = (Button) findViewById(R.id.btn_salvar);
 
         salvar.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
+                progressDialog.show();
+                progressDialog.setContentView(R.layout.progress_dialog);
+                progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
                 int radioIDComb = groupTipoComb.getCheckedRadioButtonId();
                 buttonCombustivel = findViewById(radioIDComb);
                 combustivel = buttonCombustivel.getText().toString();
@@ -143,11 +136,8 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 }
                 if(kmatual.getText().toString().matches("") || litros.getText().toString().matches("") || requisicao.getText().toString().matches("")){
                     Toast.makeText(getApplicationContext(), "Preencha todos os campos", Toast.LENGTH_LONG).show();
+                    progressDialog.hide();
                 }else{
-                    progressDialog = new ProgressDialog(AbastecimentoActivity.this);
-                    progressDialog.show();
-                    progressDialog.setContentView(R.layout.progress_dialog);
-                    progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                         SalvarDados();
                 }
             }
@@ -180,26 +170,22 @@ public class AbastecimentoActivity extends AppCompatActivity {
                     matrix.setRotate(graus);
                     Bitmap newBitmapRotate = Bitmap.createBitmap(bitimagem, 0,0, bitimagem.getWidth(),bitimagem.getHeight(),matrix,true);
                     BitmapListmg.add(newBitmapRotate);
+
                     imageGrid.setAdapter(new ImageAdapter(getApplicationContext(), this.BitmapListmg));
                     Nomefoto = NomeFotoTirada;
-                    //===== FAZER O AJUSTE DA VIEW
-                    if(quantfotos == 1){
-                        layoutgridimg.setVisibility(View.VISIBLE);
-                        layoutgridimg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,300));
-                    }
-                    if(quantfotos == 4){
-                        layoutgridimg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,600));
-                    }
+                    imageGrid.setVisibility(View.VISIBLE);
                 }
             }
         }catch (Exception error){
             error.printStackTrace();
         }
+
+        progressDialog.hide();
     }
 
     public void SalvarFotos(Bitmap bitImg, String nameimg){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitImg.compress(Bitmap.CompressFormat.JPEG,10,byteArrayOutputStream);
+        bitImg.compress(Bitmap.CompressFormat.JPEG,8,byteArrayOutputStream);
         byte[] imgBytes = byteArrayOutputStream.toByteArray();
         String photo = Base64.encodeToString(imgBytes,Base64.DEFAULT);
         StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/fotos.php",
@@ -233,7 +219,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
 
     public void tiraFoto(){
         File photoFile = null;
-        if(quantfotos < 3){
+        if(quantfotos < 2){
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
             if(intent.resolveActivity(getPackageManager())!= null) {
                 try {
@@ -243,6 +229,10 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 }
 
                 if (photoFile != null) {
+                    progressDialog = new ProgressDialog(AbastecimentoActivity.this);
+                    progressDialog.show();
+                    progressDialog.setContentView(R.layout.progress_dialog);
+                    progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                     Uri photoUri = FileProvider.getUriForFile(this, "com.womp.myapplication", photoFile);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                     startActivityForResult(intent, 10);
@@ -265,72 +255,6 @@ public class AbastecimentoActivity extends AppCompatActivity {
         return image;
     }
 
-
-    public void getPlacas() {
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/getPlacas.php",
-                new Response.Listener<String>() {
-                    JSONArray arrayplacas = new JSONArray();
-                    @Override
-                    public void onResponse(String response) {
-                        if (response.isEmpty()) {
-                            Toast.makeText(getApplicationContext(),"VAZIO", Toast.LENGTH_SHORT).show();
-                        }else{
-                            placas.add("");
-                            try {
-                                JSONObject obj = new JSONObject(response);
-
-                                if (obj.isNull("placas")){
-
-                                }else{
-                                    arrayplacas = obj.getJSONArray("placas");
-                                    for (int i=0; i< arrayplacas.length(); i++){
-                                        JSONObject jsonObject = arrayplacas.getJSONObject(i);
-                                        String placa = jsonObject.getString("placa");
-                                        placas.add(placa);
-                                    }
-                                    Spinner spinner = (Spinner) findViewById(R.id.spinnerPlacaManu);
-
-                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_text,placas);
-                                    spinner.setAdapter(adapter);
-
-                                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                        @Override
-                                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                            Object item = parent.getItemAtPosition(position);
-                                            if (position != 0){
-                                                getDetailsVei(item.toString());
-                                                modelo.setText("");
-                                                cor.setText("");
-                                            }else{
-                                                dinamicoLayout.setVisibility(View.INVISIBLE);
-                                            }
-
-                                        }
-                                        @Override
-                                        public void onNothingSelected(AdapterView<?> parent) {
-
-                                        }
-                                    });
-
-
-
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }){
-        };
-        RequestQueue fila = Volley.newRequestQueue(this);
-        fila.add(request);
-    }
-
     private void SalvarDados(){
         if(!BitmapListmg.isEmpty()){
             for (int i=0; i<BitmapListmg.size(); i++){
@@ -350,11 +274,16 @@ public class AbastecimentoActivity extends AppCompatActivity {
 
     }
 
-    private void getDetailsVei(String PlacaSelecionada){
+    private void getDetailsVei(){
+
             StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/getDadosVeiculos.php",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
+                            progressDialog = new ProgressDialog(AbastecimentoActivity.this);
+                            progressDialog.show();
+                            progressDialog.setContentView(R.layout.progress_dialog);
+                            progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
                             if (response.contains("erro")) {
                             }else{
@@ -367,15 +296,17 @@ public class AbastecimentoActivity extends AppCompatActivity {
                                         JSONArray arrayplacas ;
                                         arrayplacas = obj.getJSONArray("modelo");
                                         JSONObject jsonObject = arrayplacas.getJSONObject(0);
-                                        idveiculo = jsonObject.getString("idveiculo");
                                         modelo.setText(jsonObject.getString("modelo"));
                                         cor.setText(jsonObject.getString("cor"));
-                                        dinamicoLayout.setVisibility(View.VISIBLE);
+                                        placa.setText(jsonObject.getString("placa"));
+
                                     }
                                 } catch (JSONException e) {
+                                    System.out.println("eroo json é tal333333");
                                     e.printStackTrace();
                                 }
                             }
+                            progressDialog.hide();
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -386,11 +317,10 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String,String>  params = new HashMap<>();
-                    params.put("placa",PlacaSelecionada);
+                    params.put("idveiculo",idveiculo.toString());
                     return  params;
                 }
             };
-            dinamicoLayout.setVisibility(View.INVISIBLE);
             RequestQueue fila = Volley.newRequestQueue(this);
             fila.add(request);
     }

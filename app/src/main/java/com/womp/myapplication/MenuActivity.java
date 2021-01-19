@@ -19,7 +19,7 @@ public class MenuActivity extends AppCompatActivity {
 
     ImageView full,manutencao,cadUser,cadCarro,logout,cadChecklist;
     LinearLayout tipouserlayout;
-    String iduser, tipouser;
+    String iduser;
 
     private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
 
@@ -31,25 +31,16 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
         full = (ImageView) findViewById(R.id.full);
         manutencao = (ImageView) findViewById(R.id.manutencao);
-        cadUser = (ImageView) findViewById(R.id.cadUser);
-        cadCarro = (ImageView) findViewById(R.id.cadCarro);
         logout = (ImageView) findViewById(R.id.logout) ;
         cadChecklist = (ImageView) findViewById(R.id.cadChecklist) ;
-        tipouserlayout = findViewById(R.id.tipouser);
 
         SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
         if (preferences.contains("id")){
             iduser = preferences.getString("id",null);
-            tipouser = preferences.getString("tipo", null);
         }
 
 
 
-        if(tipouser.equals("admin")){
-            System.out.println("Tipo de usuario: " + tipouser);
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tipouserlayout.getLayoutParams();
-            lp.height = 170;
-        }
 
         full.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,23 +60,6 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-        cadUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressseDialog();
-                startActivity(new Intent(MenuActivity.this,CadastroUsuario.class));
-                finish();
-            }
-        });
-
-        cadCarro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressseDialog();
-                startActivity(new Intent(MenuActivity.this,CadastroVeiculo.class));
-                finish();
-            }
-        });
 
         cadChecklist.setOnClickListener(new View.OnClickListener() {
             @Override
