@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Função sera chamado caso o Sqlite não retorne usuario True
     public void login(){
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/login.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.234.230:8888/frota/src/pages/login.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -96,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
                             String var_name_user = Array[0];
                             String id_login_user = Array[1];
                             String idveiculo = Array[2];
+                            String placa = Array[3];
+                            String modelo = Array[4];
+                            String marca = Array[5];
+                            String tipovei = Array[6];
                             System.out.println("Tipo: "+ idveiculo);
                             String usuario = edt_user.getText().toString();
                             String senha = edit_password.getText().toString();
@@ -108,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
                                 editor.putString("pass",senha);
                             }
                             editor.putString("id",id_login_user);
+                            editor.putString("placa",placa);
+                            editor.putString("modelo",modelo);
+                            editor.putString("marca",marca);
+                            editor.putString("tipovei",tipovei);
                             editor.commit();
                             Intent intentEnviar = new Intent(MainActivity.this, MenuActivity.class);
                             startActivity(intentEnviar);

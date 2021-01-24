@@ -23,7 +23,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
 
-    ProgressDialog progressDialog;
+    ProgressDialog progressDialogMenuActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,10 +105,10 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public void progressseDialog(){
-        progressDialog = new ProgressDialog(MenuActivity.this);
-        progressDialog.show();
-        progressDialog.setContentView(R.layout.progress_dialog);
-        progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        progressDialogMenuActivity = new ProgressDialog(MenuActivity.this);
+        progressDialogMenuActivity.show();
+        progressDialogMenuActivity.setContentView(R.layout.progress_dialog);
+        progressDialogMenuActivity.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
     }
 
     public void exibirConfirmacao(){

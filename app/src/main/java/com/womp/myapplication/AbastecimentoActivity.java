@@ -22,7 +22,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -42,10 +41,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +57,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
     LinearLayout dinamicoLayout;
     RadioGroup groupTipoComb;
     RadioButton buttonCombustivel;
-    TextView modelo,cor,placa;
+    TextView modelo,marca,placa;
     EditText kmatual,litros,requisicao;
     Button salvar;
     String combustivel,idveiculo;
@@ -75,6 +70,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
     List<String> ImagensStringList = new ArrayList<>(); // nome da foto tirada
     List<File> CaminhosFotos = new ArrayList<File>(); // caminho da foto na Raiz Celular
     String NomeFotoTirada,mCurrentPhotoPath,Nomefoto,iduser;
+    String idabastece = "";
 
     private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
     int quantfotos = 0;
@@ -86,16 +82,20 @@ public class AbastecimentoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_abastecimento);
 
+        modelo = (TextView) findViewById(R.id.modelo);
+        marca = (TextView) findViewById(R.id.marca);
+        placa = (TextView) findViewById(R.id.placa);
+
         SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
         if (preferences.contains("id")){
             iduser = preferences.getString("id",null);
             idveiculo = preferences.getString("idveiculo", null);
-
+            placa.setText(preferences.getString("placa",null));
+            modelo.setText(preferences.getString("modelo",null));
+            marca.setText(preferences.getString("marca",null));
         }
 
         System.out.println("Id veiculo "+idveiculo);
-
-        getDetailsVei();
 
 
         imageGrid = (GridView) findViewById(R.id.gridview);
@@ -111,9 +111,6 @@ public class AbastecimentoActivity extends AppCompatActivity {
         groupTipoComb = findViewById(R.id.tipodecombustivel);
 
         dinamicoLayout = (LinearLayout) findViewById(R.id.LayoutDinamico);
-        modelo = (TextView) findViewById(R.id.modelo);
-        cor = (TextView) findViewById(R.id.cor);
-        placa = (TextView) findViewById(R.id.placa);
         kmatual = (EditText) findViewById(R.id.kmatual);
         litros = (EditText) findViewById(R.id.litros);
         requisicao = (EditText) findViewById(R.id.numeroRequisicao);
@@ -170,7 +167,6 @@ public class AbastecimentoActivity extends AppCompatActivity {
                     matrix.setRotate(graus);
                     Bitmap newBitmapRotate = Bitmap.createBitmap(bitimagem, 0,0, bitimagem.getWidth(),bitimagem.getHeight(),matrix,true);
                     BitmapListmg.add(newBitmapRotate);
-
                     imageGrid.setAdapter(new ImageAdapter(getApplicationContext(), this.BitmapListmg));
                     Nomefoto = NomeFotoTirada;
                     imageGrid.setVisibility(View.VISIBLE);
@@ -183,19 +179,18 @@ public class AbastecimentoActivity extends AppCompatActivity {
         progressDialog.hide();
     }
 
-    public void SalvarFotos(Bitmap bitImg, String nameimg){
+    public void SalvarFotos(Bitmap bitImg, String nameimg,String id){
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitImg.compress(Bitmap.CompressFormat.JPEG,8,byteArrayOutputStream);
+        bitImg.compress(Bitmap.CompressFormat.JPEG,20,byteArrayOutputStream);
         byte[] imgBytes = byteArrayOutputStream.toByteArray();
         String photo = Base64.encodeToString(imgBytes,Base64.DEFAULT);
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/fotos.php",
+        System.out.println("foto "+ photo);
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.234.230:8888/frota/src/pages/abastecimento/fotosAbastece.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         if(response.equals("erro")){
                             Toast.makeText(getApplicationContext(),"Erro ao enviar foto posicao : " + cont,Toast.LENGTH_SHORT).show();
-                        }else{
-
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -209,6 +204,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 HashMap<String,String> map = new HashMap<>();
                 map.put("encoded_string",photo);
                 map.put("image_name",nameimg);
+                map.put("idabastece",id);
                 return map;
             }
         };
@@ -226,8 +222,8 @@ public class AbastecimentoActivity extends AppCompatActivity {
                     photoFile = criarImagem();
                 } catch (IOException ex) {
                     //Error occurred while creating the file
-                }
 
+                }
                 if (photoFile != null) {
                     progressDialog = new ProgressDialog(AbastecimentoActivity.this);
                     progressDialog.show();
@@ -256,89 +252,36 @@ public class AbastecimentoActivity extends AppCompatActivity {
     }
 
     private void SalvarDados(){
-        if(!BitmapListmg.isEmpty()){
-            for (int i=0; i<BitmapListmg.size(); i++){
-                System.out.println("Loop "+i);
-                SalvarFotos(BitmapListmg.get(i),ImagensStringList.get(i));
-            }
-
-        }
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+            if(!BitmapListmg.isEmpty()){
+                SalvarAbastecimento();
+            }else{
+                Toast.makeText(getApplicationContext(),"Por favor tire as fotos",Toast.LENGTH_LONG).show();
+            }
 
-            SalvarAbastecimento();
         }else {
             Toast.makeText(getApplicationContext(),"Dispositivo não está conectado á Internet",Toast.LENGTH_LONG).show();
         }
 
     }
 
-    private void getDetailsVei(){
-
-            StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/getDadosVeiculos.php",
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            progressDialog = new ProgressDialog(AbastecimentoActivity.this);
-                            progressDialog.show();
-                            progressDialog.setContentView(R.layout.progress_dialog);
-                            progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-                            if (response.contains("erro")) {
-                            }else{
-                                try {
-                                    JSONObject obj = new JSONObject(response);
-                                    if (obj.isNull("modelo")){
-
-                                    }
-                                    else{
-                                        JSONArray arrayplacas ;
-                                        arrayplacas = obj.getJSONArray("modelo");
-                                        JSONObject jsonObject = arrayplacas.getJSONObject(0);
-                                        modelo.setText(jsonObject.getString("modelo"));
-                                        cor.setText(jsonObject.getString("cor"));
-                                        placa.setText(jsonObject.getString("placa"));
-
-                                    }
-                                } catch (JSONException e) {
-                                    System.out.println("eroo json é tal333333");
-                                    e.printStackTrace();
-                                }
-                            }
-                            progressDialog.hide();
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            }){
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String,String>  params = new HashMap<>();
-                    params.put("idveiculo",idveiculo.toString());
-                    return  params;
-                }
-            };
-            RequestQueue fila = Volley.newRequestQueue(this);
-            fila.add(request);
-    }
-
     public void SalvarAbastecimento(){
-
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/abastecimento.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.234.230:8888/frota/src/pages/abastecimento/abastecimento.php",
                 new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if(response.equals("erro")){
                     Toast.makeText(getApplicationContext(),"Houve um erro", Toast.LENGTH_SHORT).show();
                 }else{
-
-                    Toast.makeText(getApplicationContext(),"Cadastro Realizado com Sucesso",Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(AbastecimentoActivity.this,MenuActivity.class));
-                    finish();
-
+                    for (int i=0; i<BitmapListmg.size(); i++){
+                        System.out.println("Loop "+i);
+                        SalvarFotos(BitmapListmg.get(i),ImagensStringList.get(i),response);
+                    }
+                    Toast.makeText(getApplicationContext(),"Cadastrado com sucesso",Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                    startActivity(intent);
                 }
             }
         }, new Response.ErrorListener() {
@@ -354,7 +297,6 @@ public class AbastecimentoActivity extends AppCompatActivity {
                 param.put("combustivel",combustivel);
                 param.put("litros",litros.getText().toString());
                 param.put("requisicao",requisicao.getText().toString());
-                param.put("nomedasfotos",ImagensStringList.toString());
                 param.put("idveiculo",idveiculo.toString());
                 param.put("iduser",iduser);
                 return param;

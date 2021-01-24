@@ -15,11 +15,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +40,7 @@ import java.util.Map;
 
 public class CheckList extends AppCompatActivity {
 
-    private TextView modelo,cor,placa;
+    private TextView modelo,marca,placa;
 
     private ArrayList<String> list = new ArrayList<>() ;
     ArrayList<String> selectedItems = new ArrayList<>();
@@ -50,7 +48,7 @@ public class CheckList extends AppCompatActivity {
     private ListView listEdit;
     private CustomAdapterEdit adapterEdit;
     private Button btn_finalizar;
-    String idveiculo, tipo,iduser, tipoVeiculo;
+    String idveiculo, tipo,iduser,tipovei;
     private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
     RadioGroup groupTipoComb;
     RadioButton buttonCombustivel;
@@ -67,25 +65,30 @@ public class CheckList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_list);
 
+        placa = findViewById(R.id.placa);
+        modelo = findViewById(R.id.modelo);
+        marca = findViewById(R.id.marca);
+
         SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
         if (preferences.contains("id")){
             iduser = preferences.getString("id",null);
             idveiculo = preferences.getString("idveiculo", null);
+            placa.setText(preferences.getString("placa",null));
+            modelo.setText(preferences.getString("modelo",null));
+            marca.setText(preferences.getString("marca",null));
+            tipovei = preferences.getString("tipovei", null);
         }
 
-        getDetailsVei();
 
         groupTipoComb = findViewById(R.id.tipo);
         btn_finalizar = findViewById(R.id.btn_salvar);
-        placa = findViewById(R.id.placa);
         kmatual = (EditText) findViewById(R.id.kmatual);
         listEdit = findViewById(R.id.listEdit);
         listEdit.setChoiceMode(listEdit.CHOICE_MODE_MULTIPLE);
-        modelo = findViewById(R.id.modelo);
-        cor = findViewById(R.id.cor);
+
         mOrder = (Button) findViewById(R.id.btnOrder);
 
-        getItems("carro");
+        getItems(tipovei);
 
 
 
@@ -147,18 +150,18 @@ public class CheckList extends AppCompatActivity {
         });
     }
 
-    public void getItems(String tipo){
+    public void getItems(String tipovei){
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         try{
-            String url = "http://177.91.235.146/frota/mobileapp/items.json";
-            System.out.println("tipo: "+tipo);
+            String url = "http://177.91.234.230:8888/frota/src/pages/checklist/itens.json";
+            System.out.println("tipo: "+tipovei);
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
 
-                        JSONArray items =  response.getJSONArray(tipo);
+                        JSONArray items =  response.getJSONArray(tipovei);
                         ArrayList<String> arrayList = new ArrayList<String>();
 
                         list.clear();
@@ -187,59 +190,14 @@ public class CheckList extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private void getDetailsVei(){
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/getDadosVeiculos.php",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
 
-                        if (response.contains("erro")) {
-                        }else{
-                            try {
-                                JSONObject obj = new JSONObject(response);
-                                if (obj.isNull("modelo")){
-
-                                }
-                                else{
-                                    JSONArray arrayplacas ;
-                                    arrayplacas = obj.getJSONArray("modelo");
-                                    JSONObject jsonObject = arrayplacas.getJSONObject(0);
-                                    idveiculo = jsonObject.getString("idveiculo");
-                                    tipoVeiculo = jsonObject.getString("tipo");
-                                    getItems(tipoVeiculo);
-                                    System.out.println("Checklist Items tipo: "+tipoVeiculo);
-                                    modelo.setText(jsonObject.getString("modelo"));
-                                    cor.setText(jsonObject.getString("cor"));
-                                    placa.setText(jsonObject.getString("placa"));
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String>  params = new HashMap<>();
-                params.put("idveiculo",idveiculo.toString());
-                return  params;
-            }
-        };
-
-        RequestQueue fila = Volley.newRequestQueue(this);
-        fila.add(request);
-    }
     public void CombustivelRadio(View view){
         //get id
         int radioIDComb = groupTipoComb.getCheckedRadioButtonId();
 
         buttonCombustivel = findViewById(radioIDComb);
     }
+
     public void setComment(){
 
         editModelArrayList = populateList();
@@ -333,7 +291,7 @@ public class CheckList extends AppCompatActivity {
     }
 
     public void SalvarCheckList(ArrayList<String> listComments){
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/checklist.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.234.230:8888/frota/src/pages/checklist/checklist.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -363,6 +321,7 @@ public class CheckList extends AppCompatActivity {
                 param.put("iduser",iduser);
                 param.put("listItems",selectedItems.toString());
                 param.put("listComments", listComments.toString());
+                System.out.println("Lista de Items: " + selectedItems.toString());
                 System.out.println("Lista Commentes: "+ listComments. toString());
                 return param;
             }

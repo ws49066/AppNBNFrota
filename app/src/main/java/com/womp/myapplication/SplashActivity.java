@@ -26,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
     private   final String ARQUIVO_AUTENTICACAO = "ArquivoAutentica";
 
     public  String user,pass, tipo;
-    ProgressDialog progressDialog;
+    ProgressDialog progressDialogSplash;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +37,10 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                progressDialog = new ProgressDialog(SplashActivity.this);
-                progressDialog.show();
-                progressDialog.setContentView(R.layout.progress_dialog);
-                progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                progressDialogSplash = new ProgressDialog(SplashActivity.this);
+                progressDialogSplash.show();
+                progressDialogSplash.setContentView(R.layout.progress_dialog);
+                progressDialogSplash.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 if (preferences.contains("user") && preferences.contains("pass")){
                     user = preferences.getString("user",null);
                     pass = preferences.getString("pass",null);
@@ -56,7 +56,7 @@ public class SplashActivity extends AppCompatActivity {
 
     public void autenticado(){
 
-        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.235.146/frota/mobileapp/login.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.234.230:8888/frota/src/pages/login.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
