@@ -2,19 +2,31 @@ package com.womp.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -34,8 +46,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CheckList extends AppCompatActivity {
@@ -58,6 +76,15 @@ public class CheckList extends AppCompatActivity {
     String[] listItems;
     boolean[] checkedItems;
     ArrayList<Integer> mUserItems = new ArrayList<>();
+    ImageView tirafoto;
+    Bitmap bitimagem ;
+    Integer cont;
+    List<String> ImagensStringList = new ArrayList<>(); // nome da foto tirada
+    List<File> CaminhosFotos = new ArrayList<File>(); // caminho da foto na Raiz Celular
+    String NomeFotoTirada,mCurrentPhotoPath,Nomefoto;
+    int quantfotos = 0;
+    private GridView imageGrid;
+    private ArrayList<Bitmap> BitmapListmg;
 
 
     @Override
@@ -68,6 +95,7 @@ public class CheckList extends AppCompatActivity {
         placa = findViewById(R.id.placa);
         modelo = findViewById(R.id.modelo);
         marca = findViewById(R.id.marca);
+        tirafoto = (ImageView) findViewById(R.id.ImgBtn_foto);
 
         SharedPreferences preferences = getSharedPreferences(ARQUIVO_AUTENTICACAO,0);
         if (preferences.contains("id")){
@@ -89,6 +117,25 @@ public class CheckList extends AppCompatActivity {
         mOrder = (Button) findViewById(R.id.btnOrder);
 
         getItems(tipovei);
+
+        imageGrid = (GridView) findViewById(R.id.gridview);
+        BitmapListmg = new ArrayList<Bitmap>();
+
+        tirafoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tiraFoto();
+            }
+        });
+
+        //Permissão de CAMERA
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.CAMERA
+            }, 0);
+        }
+
+        tirafoto = (ImageView) findViewById(R.id.ImgBtn_foto);
 
 
 
@@ -146,7 +193,7 @@ public class CheckList extends AppCompatActivity {
         });
 
         btn_finalizar.setOnClickListener(view -> {
-            PreFinalizar();
+            SalvarDados();
         });
     }
 
@@ -298,8 +345,11 @@ public class CheckList extends AppCompatActivity {
                         System.out.println("Retorno "+response.toString());
                         if(response.equals("erro")){
                             Toast.makeText(getApplicationContext(),"Houve um erro", Toast.LENGTH_SHORT).show();
-                            progressDialog.hide();
                         }else{
+                            for (int i=0; i<BitmapListmg.size(); i++){
+
+                                SalvarFotos(BitmapListmg.get(i),ImagensStringList.get(i),response);
+                            }
                             Toast.makeText(getApplicationContext(),"Cadastro Realizado com Sucesso",Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(CheckList.this,MenuActivity.class));
                             finish();
@@ -330,6 +380,124 @@ public class CheckList extends AppCompatActivity {
         fila.add(request);
     }
 
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        super.onActivityResult(requestCode,resultCode,intent);
+        try{
+            if (resultCode == RESULT_OK){
+                quantfotos++;
+                File file = new File(mCurrentPhotoPath);
+                CaminhosFotos.add(file);
+                bitimagem  = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
+
+                if(bitimagem  != null) {
+                    //====== FAZER O AJUSTE NA ORIENTAÇAO DA TELA ===//
+                    ImagensStringList.add(NomeFotoTirada);
+                    System.out.println("Nome da foto = "+NomeFotoTirada);
+                    float graus = 90;
+                    Matrix matrix = new Matrix();
+                    matrix.setRotate(graus);
+                    Bitmap newBitmapRotate = Bitmap.createBitmap(bitimagem, 0,0, bitimagem.getWidth(),bitimagem.getHeight(),matrix,true);
+                    BitmapListmg.add(newBitmapRotate);
+                    imageGrid.setAdapter(new ImageAdapter(getApplicationContext(), this.BitmapListmg));
+                    Nomefoto = NomeFotoTirada;
+                    imageGrid.setVisibility(View.VISIBLE);
+                }
+            }
+        }catch (Exception error){
+            error.printStackTrace();
+        }
+
+        progressDialog.hide();
+    }
+
+    public void SalvarFotos(Bitmap bitImg, String nameimg,String idchecklist){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitImg.compress(Bitmap.CompressFormat.JPEG,20,byteArrayOutputStream);
+        byte[] imgBytes = byteArrayOutputStream.toByteArray();
+        String photo = Base64.encodeToString(imgBytes,Base64.DEFAULT);
+        System.out.println("foto "+ photo);
+        System.out.println("id do checklist "+idchecklist);
+        StringRequest request = new StringRequest(Request.Method.POST, "http://177.91.234.230:8888/frota/src/pages/checklist/fotosChecklist.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if(response.equals("erro")){
+                            Toast.makeText(getApplicationContext(),"Erro ao enviar foto posicao : " + cont,Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String,String> map = new HashMap<>();
+                map.put("encoded_string",photo);
+                map.put("image_name",nameimg);
+                map.put("idchecklist",idchecklist);
+                return map;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(request);
+    }
+
+    public void tiraFoto(){
+        File photoFile = null;
+        if(quantfotos < 2){
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
+            if(intent.resolveActivity(getPackageManager())!= null) {
+                try {
+                    photoFile = criarImagem();
+                } catch (IOException ex) {
+                    //Error occurred while creating the file
+
+                }
+                if (photoFile != null) {
+                    progressDialog = new ProgressDialog(CheckList.this);
+                    progressDialog.show();
+                    progressDialog.setContentView(R.layout.progress_dialog);
+                    progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    Uri photoUri = FileProvider.getUriForFile(this, "com.womp.myapplication", photoFile);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                    startActivityForResult(intent, 10);
+                }
+            }
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"Limite de fotos atingido",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public File criarImagem() throws IOException {
+        // criar arquivo de imagem
+        String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date());
+        NomeFotoTirada = timeStamp;
+        File storagedir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(NomeFotoTirada,".jpg",storagedir);
+
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void SalvarDados(){
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+            if(!BitmapListmg.isEmpty()){
+                PreFinalizar();
+            }else{
+                Toast.makeText(getApplicationContext(),"Por favor tire as fotos",Toast.LENGTH_LONG).show();
+            }
+
+        }else {
+            Toast.makeText(getApplicationContext(),"Dispositivo não está conectado á Internet",Toast.LENGTH_LONG).show();
+        }
+    }
 
 
 }

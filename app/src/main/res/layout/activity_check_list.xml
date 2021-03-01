@@ -189,23 +189,55 @@
                 android:textColor="@color/white" />
         </RadioGroup>
 
+
+
+
+        <ImageView
+            android:id="@+id/ImgBtn_foto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline5"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/tipo"
+            app:srcCompat="@drawable/ic_baseline_camera_alt_24" />
+
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="20dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="false"
+            android:columnWidth="115dp"
+            android:drawSelectorOnTop="true"
+            android:numColumns="2"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ImgBtn_foto" />
+
         <Button
             android:id="@+id/btnOrder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="52dp"
+            android:layout_marginTop="36dp"
             android:text="Itens de checklist"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/tipo" />
+            app:layout_constraintTop_toBottomOf="@+id/gridview" />
 
         <ListView
             android:id="@+id/listEdit"
             android:layout_width="438dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="@color/nbncolor"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
@@ -216,15 +248,19 @@
             android:layout_width="283dp"
             android:layout_height="42dp"
             android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_marginTop="24dp"
             android:layout_marginBottom="16dp"
+            android:layout_marginTop="8dp"
             android:background="@color/gray"
             android:text="SALVAR"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
             app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toBottomOf="@+id/listEdit" />
+            app:layout_constraintTop_toBottomOf="@+id/listEdit"
+            app:layout_constraintStart_toStartOf="@+id/guideline4" />
+
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -276,7 +276,7 @@ public class AbastecimentoActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Houve um erro", Toast.LENGTH_SHORT).show();
                 }else{
                     for (int i=0; i<BitmapListmg.size(); i++){
-                        System.out.println("Loop "+i);
+
                         SalvarFotos(BitmapListmg.get(i),ImagensStringList.get(i),response);
                     }
                     Toast.makeText(getApplicationContext(),"Cadastrado com sucesso",Toast.LENGTH_LONG).show();
